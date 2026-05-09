@@ -1,0 +1,219 @@
+{
+  "navbar": {
+    "home": "Home",
+    "problem": "Problem",
+    "benefits": "Benefits",
+    "testimonials": "Testimonials",
+    "comparison": "Comparison",
+    "howItWorks": "How it works?"
+  },
+  "hero": {
+    "headline1": "Real discounts.",
+    "headline2": "Safe redemptions.",
+    "headline3": "Community you can trust.",
+    "subtitle": "Klippr connects your favorite business with a unique, one-time QR code. Scan, save, and share your experience.",
+    "ctaPrimary": "Explore discounts",
+    "ctaSecondary": "Own a business? See how Klippr helps you →",
+    "imageAlt": "Klippr app — promotions feed with discounts"
+  },
+  "painPoints": {
+    "label": "Before Klippr",
+    "heading": "You've been through this.",
+    "bridge": "Klippr was born to\nsolve this.",
+    "items": [
+      {
+        "label": "Reused code",
+        "headline": "You shared it.",
+        "copy": "You shared a coupon, but when you tried to use it, it was already gone. Someone else took it."
+      },
+      {
+        "label": "Unverified offer",
+        "headline": "You saw it online.",
+        "copy": "You see a promo on social media but no one confirms if it actually works. Do you risk it?"
+      },
+      {
+        "label": "Blind campaign",
+        "headline": "You launched the promo.",
+        "copy": "Your business runs promos but doesn't know how many customers used them or what they thought."
+      }
+    ]
+  },
+  "howItWorks": {
+    "heading": "That simple.",
+    "steps": [
+      {
+        "label": "EXPLORE",
+        "heading": "Filter and\ndiscover",
+        "body": "Open the feed and filter by category, location, rating, or discount percentage. Find the deal that actually works for you."
+      },
+      {
+        "label": "ACTIVATE",
+        "heading": "Your QR,\nyour discount",
+        "body": "Found something good. Tap \"Get discount\" and Klippr generates a unique QR linked to your account. Only you can use it — no one else."
+      },
+      {
+        "label": "REDEEM",
+        "heading": "Show it\nand done",
+        "body": "At the store, show your QR. Instant validation, under 3 seconds. No paperwork, no screenshots, no hassle."
+      },
+      {
+        "label": "SHARE",
+        "heading": "Your voice\nmatters",
+        "body": "How did it go? Leave your rating. Your experience helps others decide and helps the business improve their promotions."
+      }
+    ],
+    "panels": {
+      "activar": {
+        "qrPersonal": "Your personal QR for",
+        "validTime": "Valid for 15 min · For you only"
+      },
+      "canjear": {
+        "success": "Discount applied!",
+        "validated": "Validated in 2.1 seconds",
+        "redeemed": "QR redeemed · The Daily Grind"
+      },
+      "compartir": {
+        "question": "How was your experience at The Daily Grind?",
+        "review": "Excellent coffee and service. The discount applied perfectly, no hassle. Would definitely go back! ☕",
+        "tags": ["Great price", "Fast service", "I recommend it"],
+        "submit": "Post review"
+      },
+      "explorar": {
+        "filters": ["🍔 Food", "📍 Nearby", "⭐ +4.5", "🏷️ -30%"]
+      }
+    }
+  },
+  "benefits": {
+    "heading": "Made for you —",
+    "headingAccent": "and your business.",
+    "subheading": "Klippr understands you're two people: one who wants to save and one who wants to grow.",
+    "tabConsumer": "For you",
+    "tabBusiness": "For your business",
+    "screenLabelConsumer": "For you",
+    "screenLabelBusiness": "For your business",
+    "b2c": [
+      {
+        "title": "Deals that actually matter",
+        "body": "Filter by category, location, and rating. Your feed adapts to what you're looking for, with no noise or spam."
+      },
+      {
+        "title": "Your code, yours alone",
+        "body": "Each QR is unique and one-time. It locks after redemption. No one else can use it. Period."
+      },
+      {
+        "title": "Reviews from people like you",
+        "body": "Only those who actually redeemed can review. No made-up reviews."
+      },
+      {
+        "title": "Everything in one place",
+        "body": "Your active discounts, past redemptions, and reviews. No searching through emails or screenshots."
+      }
+    ],
+    "b2b": [
+      {
+        "title": "Know what works (for real)",
+        "body": "Dashboard with real data: how many saw your promo, how many redeemed it, how they rated it."
+      },
+      {
+        "title": "Goodbye to reuse",
+        "body": "Each QR is automatically blocked post-redemption. No more shared coupons on WhatsApp eating into your margin."
+      },
+      {
+        "title": "You control everything",
+        "body": "Publish, pause, or edit campaigns from the app. Set %, dates, conditions, and redemption limits. No middlemen."
+      },
+      {
+        "title": "Build visible trust",
+        "body": "Your customers leave public reviews and you can reply to them. Social proof attracts new customers without spending on ads."
+      }
+    ],
+    "dashboard": {
+      "views": "Views",
+      "redemptions": "Redeemed",
+      "redemptionsPerDay": "Redeemed/day",
+      "promoLabel": "Promo 30% OFF",
+      "promoStatus": "Active · 87 left"
+    }
+  },
+  "socialProof": {
+    "heading": "The numbers speak.",
+    "stat1": "more redemptions in campaigns with positive reviews",
+    "stat2": "QR validation at point of sale",
+    "stat3": "successful redemption rate",
+    "testimonials": [
+      {
+        "quote": "I used to search for promos in WhatsApp groups and never knew if they'd work. With Klippr I scan my QR and done, zero surprises.",
+        "name": "Lizbeth",
+        "role": "28 years old",
+        "badge": "Verified user"
+      },
+      {
+        "quote": "Now I know exactly how many customers used my Friday promo and what they thought. The metrics changed how I plan my campaigns.",
+        "name": "Alexander",
+        "role": "42 years old",
+        "badge": "Affiliated business"
+      },
+      {
+        "quote": "The team learned to scan QR codes in 5 minutes. Zero complex training.",
+        "name": "Retail point of sale",
+        "role": "Point of sale",
+        "badge": "Point of sale"
+      }
+    ],
+    "dotAriaLabel": "Go to testimonial"
+  },
+  "comparison": {
+    "heading": "Why Klippr and not another app?",
+    "subheading": "We compare what matters.",
+    "colFeature": "Feature",
+    "colTraditional": "Traditional coupons",
+    "colSuperapp": "Super-apps",
+    "colKlippr": "Klippr ✨",
+    "tooltipPartial": "Usually applies only on delivery platforms, but not when redeeming in person.",
+    "rows": [
+      {
+        "feature": "Unique QR per user",
+        "tradicional": "Shareable codes",
+        "superapp": "Generic codes",
+        "klippr": "UUID per account+offer"
+      },
+      {
+        "feature": "Post-redemption lock",
+        "tradicional": "No control",
+        "superapp": "Partial (delivery only)",
+        "klippr": "Automatic and instant"
+      },
+      {
+        "feature": "Reviews tied to redemption",
+        "tradicional": "Open reviews",
+        "superapp": "No social module",
+        "klippr": "Verified post-redemption only"
+      },
+      {
+        "feature": "Business dashboard",
+        "tradicional": "Limited",
+        "superapp": "Limited",
+        "klippr": "Views, redemptions, ratings, time"
+      },
+      {
+        "feature": "Campaign self-management",
+        "tradicional": "Intermediaries",
+        "superapp": "Complex process",
+        "klippr": "From the app, in minutes"
+      },
+      {
+        "feature": "Redemption at physical POS",
+        "tradicional": "Printed/manual",
+        "superapp": "Digital only",
+        "klippr": "QR scan or manual code"
+      }
+    ]
+  },
+  "footer": {
+    "cta": "Try Klippr now.",
+    "githubButton": "Visit the App on GitHub",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "copyright": "© 2026 QRust. Made with 💜 in Peru."
+  }
+}

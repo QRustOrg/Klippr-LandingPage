@@ -1,0 +1,158 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Fonts */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Klippr: heading → Montserrat (replaces Cormorant for the klippr branch) */
+  --font-heading: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+
+  /* instruct.ai color tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Border radius scale */
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 3);
+}
+
+:root {
+  /* instruct.ai light mode — white base, charcoal text */
+  --background: oklch(1 0 0);              /* #ffffff */
+  --foreground: oklch(0.148 0 0);          /* ~#1a1a1a dark charcoal */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.148 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.148 0 0);
+  --primary: oklch(0.148 0 0);            /* black buttons */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.148 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.52 0 0);    /* ~#6b7280 gray body text */
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.148 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.91 0 0);              /* ~#e5e7eb light border */
+  --input: oklch(0.91 0 0);
+  --ring: oklch(0.708 0 0);
+  --radius: 0.5rem;
+
+  /* Custom instruct.ai tokens */
+  --color-footer-bg: oklch(0.148 0 0);   /* ~#1e1e26 dark footer */
+  --color-footer-fg: oklch(0.75 0 0);
+  --color-nav-pill-bg: oklch(1 0 0);
+  --color-nav-pill-border: oklch(0.91 0 0);
+
+  /* Klippr brand tokens */
+  --klippr-violet: #7161ef;
+  --klippr-dark: #0F0F1A;
+}
+
+.dark {
+  /* Dark mode overrides for Klippr */
+  --background: oklch(0.09 0.02 275);   /* ~#0F0F1A */
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.13 0.02 275);
+  --card-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.18 0.015 275);
+  --muted-foreground: oklch(0.65 0 0);
+  --border: oklch(0.22 0.015 275);
+  --input: oklch(0.22 0.015 275);
+  --primary: #7161ef;
+  --primary-foreground: oklch(1 0 0);
+  --color-footer-bg: oklch(0.07 0.015 275);
+  --color-footer-fg: oklch(0.6 0 0);
+  --color-nav-pill-bg: oklch(0.13 0.02 275);
+  --color-nav-pill-border: oklch(0.22 0.015 275);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Nav pill transition */
+.nav-scrolled {
+  background: oklch(1 0 0);
+  border-radius: 9999px;
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.08), 0 0 0 1px oklch(0.91 0 0);
+  margin-left: 1.25rem;
+  margin-right: 1.25rem;
+}
+
+/* Entrance animation utility */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Slime mascot idle bob */
+@keyframes slimeBob {
+  0%, 100% { transform: translateY(0px) rotate(-2deg); }
+  50%       { transform: translateY(-10px) rotate(3deg); }
+}
+
+.animate-slime-bob {
+  animation: slimeBob 3s ease-in-out infinite;
+}
+
+/* Benefits section card entrance */
+@keyframes benefitsCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-benefits-card-in {
+  animation: benefitsCardIn 0.35s ease forwards;
+}
+
+

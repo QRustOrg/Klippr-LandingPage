@@ -1,0 +1,219 @@
+{
+  "navbar": {
+    "home": "Inicio",
+    "problem": "Problema",
+    "benefits": "Beneficios",
+    "testimonials": "Testimonios",
+    "comparison": "Comparación",
+    "howItWorks": "¿Cómo funciona?"
+  },
+  "hero": {
+    "headline1": "Descuentos reales.",
+    "headline2": "Canjes seguros.",
+    "headline3": "Comunidad que confía.",
+    "subtitle": "Klippr conecta tu negocio favorito con un QR único e irrepetible. Escanea, ahorra y comparte tu experiencia.",
+    "ctaPrimary": "Explorar descuentos",
+    "ctaSecondary": "¿Tienes un negocio? Conoce cómo Klippr te ayuda →",
+    "imageAlt": "Klippr app — feed de promociones con descuentos"
+  },
+  "painPoints": {
+    "label": "Antes de Klippr",
+    "heading": "Has pasado por esto.",
+    "bridge": "Klippr nació para\nresolver esto.",
+    "items": [
+      {
+        "label": "Código reutilizado",
+        "headline": "Lo compartiste.",
+        "copy": "Compartiste un cupón y cuando quisiste usarlo ya no funcionó. Alguien más se lo quedó."
+      },
+      {
+        "label": "Oferta sin respaldo",
+        "headline": "Lo viste en redes.",
+        "copy": "Ves una promo en redes sociales pero nadie confirma si realmente funciona. ¿Te arriesgas?"
+      },
+      {
+        "label": "Campaña a ciegas",
+        "headline": "Lanzaste la promo.",
+        "copy": "Tu negocio lanza promos pero no sabe cuántos clientes las usaron, ni qué pensaron."
+      }
+    ]
+  },
+  "howItWorks": {
+    "heading": "Así de fácil.",
+    "steps": [
+      {
+        "label": "EXPLORAR",
+        "heading": "Filtra y\ndescubre",
+        "body": "Abre el feed y filtra por categoría, ubicación, rating o porcentaje de descuento. Encuentra la oferta que realmente te conviene."
+      },
+      {
+        "label": "ACTIVAR",
+        "heading": "Tu QR,\ntu descuento",
+        "body": "Encontraste algo bueno. Toca \"Obtener descuento\" y Klippr genera un QR único vinculado a tu cuenta. Solo tú puedes usarlo — nadie más."
+      },
+      {
+        "label": "CANJEAR",
+        "heading": "Muestra\ny listo",
+        "body": "En el negocio, muestra tu QR. Validación instantánea, menos de 3 segundos. Sin papeles, sin capturas, sin complicaciones."
+      },
+      {
+        "label": "COMPARTIR",
+        "heading": "Tu voz\nimporta",
+        "body": "¿Cómo te fue? Deja tu calificación. Tu experiencia ayuda a otros a decidir y al negocio a mejorar sus promociones."
+      }
+    ],
+    "panels": {
+      "activar": {
+        "qrPersonal": "Tu QR personal para",
+        "validTime": "Válido por 15 minutos · Solo para ti"
+      },
+      "canjear": {
+        "success": "¡Descuento aplicado!",
+        "validated": "Validado en 2.1 segundos",
+        "redeemed": "QR canjeado · The Daily Grind"
+      },
+      "compartir": {
+        "question": "¿Cómo fue tu experiencia en The Daily Grind?",
+        "review": "Excelente café y atención. El descuento aplicó perfecto, sin complicaciones. ¡Volvería sin duda! ☕",
+        "tags": ["Buen precio", "Atención rápida", "Lo recomiendo"],
+        "submit": "Publicar reseña"
+      },
+      "explorar": {
+        "filters": ["🍔 Comida", "📍 Cerca", "⭐ +4.5", "🏷️ -30%"]
+      }
+    }
+  },
+  "benefits": {
+    "heading": "Hecho para ti —",
+    "headingAccent": "y para tu negocio.",
+    "subheading": "Klippr entiende que eres dos personas: quien busca ahorrar y quien quiere crecer.",
+    "tabConsumer": "Para ti",
+    "tabBusiness": "Para tu negocio",
+    "screenLabelConsumer": "Para ti",
+    "screenLabelBusiness": "Para tu negocio",
+    "b2c": [
+      {
+        "title": "Ofertas que sí te importan",
+        "body": "Filtra por categoría, ubicación y rating. Tu feed se adapta a lo que buscas, sin ruido ni spam."
+      },
+      {
+        "title": "Tu código, solo tuyo",
+        "body": "Cada QR es único e irrepetible. Se bloquea después del canje. Nadie más puede usarlo. Punto."
+      },
+      {
+        "title": "Experiencias de gente como tú",
+        "body": "Solo pueden opinar quienes realmente canjearon. Nada de reseñas inventadas."
+      },
+      {
+        "title": "Todo en un solo lugar",
+        "body": "Tus descuentos activos, canjes pasados y reseñas. Sin buscar en correos ni screenshots."
+      }
+    ],
+    "b2b": [
+      {
+        "title": "Sabe qué funciona (de verdad)",
+        "body": "Dashboard con datos reales: cuántos vieron tu promo, cuántos canjearon, cómo la calificaron."
+      },
+      {
+        "title": "Adiós al reuso",
+        "body": "Cada QR se bloquea automáticamente post-canje. No más cupones compartidos en WhatsApp consumiendo tu margen."
+      },
+      {
+        "title": "Tú controlas todo",
+        "body": "Publica, pausa o edita campañas desde la app. Define %, fechas, condiciones y límite de canjes. Sin intermediarios."
+      },
+      {
+        "title": "Construye confianza visible",
+        "body": "Tus clientes dejan reseñas públicas y tú puedes responderlas. La prueba social atrae nuevos clientes sin gastar en publicidad."
+      }
+    ],
+    "dashboard": {
+      "views": "Vistas",
+      "redemptions": "Canjes",
+      "redemptionsPerDay": "Canjes por día",
+      "promoLabel": "Promo 30% OFF",
+      "promoStatus": "Activa · 87 canjes restantes"
+    }
+  },
+  "socialProof": {
+    "heading": "Los números hablan.",
+    "stat1": "más canjes en campañas con reseñas positivas",
+    "stat2": "validación QR en punto de venta",
+    "stat3": "tasa de canje exitoso",
+    "testimonials": [
+      {
+        "quote": "Antes buscaba promos en grupos de WhatsApp y nunca sabía si funcionarían. Con Klippr escaneo mi QR y listo, cero sorpresas.",
+        "name": "Lizbeth",
+        "role": "28 años",
+        "badge": "Usuario verificado"
+      },
+      {
+        "quote": "Ahora sé exactamente cuántos clientes usaron mi promo del viernes y qué opinaron. Las métricas cambiaron cómo planifico mis campañas.",
+        "name": "Alexander",
+        "role": "42 años",
+        "badge": "Negocio afiliado"
+      },
+      {
+        "quote": "El equipo aprendió a escanear QR en 5 minutos. Cero capacitación compleja.",
+        "name": "Punto de venta retail",
+        "role": "Punto de venta",
+        "badge": "Punto de venta"
+      }
+    ],
+    "dotAriaLabel": "Ir al testimonio"
+  },
+  "comparison": {
+    "heading": "¿Por qué Klippr y no otra app?",
+    "subheading": "Comparamos lo que importa.",
+    "colFeature": "Feature",
+    "colTraditional": "Cuponeras tradicionales",
+    "colSuperapp": "Super-apps",
+    "colKlippr": "Klippr ✨",
+    "tooltipPartial": "Suele aplicar solo en plataformas de delivery, pero no al redimir presencialmente.",
+    "rows": [
+      {
+        "feature": "QR único por usuario",
+        "tradicional": "Códigos compartibles",
+        "superapp": "Códigos genéricos",
+        "klippr": "UUID por cuenta+oferta"
+      },
+      {
+        "feature": "Bloqueo post-canje",
+        "tradicional": "Sin control",
+        "superapp": "Parcial (solo delivery)",
+        "klippr": "Automático e instantáneo"
+      },
+      {
+        "feature": "Reseñas ligadas al canje",
+        "tradicional": "Reseñas abiertas",
+        "superapp": "Sin módulo social",
+        "klippr": "Solo post-canje verificado"
+      },
+      {
+        "feature": "Dashboard para el negocio",
+        "tradicional": "Limitado",
+        "superapp": "Limitado",
+        "klippr": "Vistas, canjes, ratings, tiempo"
+      },
+      {
+        "feature": "Autogestión de campañas",
+        "tradicional": "Intermediarios",
+        "superapp": "Proceso complejo",
+        "klippr": "Desde la app, en minutos"
+      },
+      {
+        "feature": "Canje en punto de venta físico",
+        "tradicional": "Impreso/manual",
+        "superapp": "Solo digital",
+        "klippr": "QR scan o código manual"
+      }
+    ]
+  },
+  "footer": {
+    "cta": "Prueba Klippr ahora.",
+    "githubButton": "Visita la App en GitHub",
+    "terms": "Términos",
+    "privacy": "Privacidad",
+    "copyright": "© 2026 QRust. Hecho con 💜 en Perú."
+  }
+}
