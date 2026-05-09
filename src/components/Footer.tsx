@@ -80,7 +80,7 @@ export function Footer() {
                 <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-10">
                     {/* Logo */}
                     <div className="flex-1 flex justify-center md:justify-start">
-                        <Link href="/" className="flex items-center gap-2">
+                        <Link href="/public" className="flex items-center gap-2">
                             <KlipprScissorsIcon className="w-8 h-8 text-white" />
                             <span className="text-white text-xl font-bold font-heading tracking-tight">Klippr</span>
                         </Link>
