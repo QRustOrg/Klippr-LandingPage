@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AgentMigrationStateService">
+    <option name="pendingSessionIds">
+      <option value="7be08ad9-58f2-432e-af8b-53392b395939" />
+    </option>
+    <option name="pendingTurns">
+      <map>
+        <entry key="7be08ad9-58f2-432e-af8b-53392b395939">
+          <value>
+            <set>
+              <option value="b9bfa139-7b9b-421c-9819-bb81aef0b2f7" />
+              <option value="12eea0a7-b4a2-4d8d-8768-45bb2ec24d0e" />
+              <option value="367ea5f5-3673-4c4b-9107-bebe25b19dd1" />
+            </set>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <pendingWorkingSetItems>
+      <entry key="7be08ad9-58f2-432e-af8b-53392b395939">
+        <set>
+          <option value="file://$PROJECT_DIR$/src/components/HowItWorksSection.tsx" />
+          <option value="file://$PROJECT_DIR$/src/components/BenefitsSection.tsx" />
+          <option value="file://$PROJECT_DIR$/IMPLEMENTATION_SUMMARY.md" />
+          <option value="file://$PROJECT_DIR$/QUICK_START.md" />
+          <option value="file://$PROJECT_DIR$/USAGE_EXAMPLES.md" />
+        </set>
+      </entry>
+    </pendingWorkingSetItems>
+  </component>
+</project>
