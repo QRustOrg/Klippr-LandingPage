@@ -15,8 +15,30 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Klippr — Descuentos reales. Canjes seguros.",
-  description: "Klippr conecta tu negocio favorito con un QR único e irrepetible. Escanea, ahorra y comparte tu experiencia.",
+  title: {
+    default: "Klippr — Descuentos reales. Canjes seguros.",
+    template: "%s | Klippr",
+  },
+  description:
+    "Klippr conecta tu negocio favorito con un QR único e irrepetible. Escanea, ahorra y comparte tu experiencia. Promociones verificadas para consumidores y métricas claras para negocios.",
+  keywords: [
+    "Klippr",
+    "descuentos",
+    "cupones digitales",
+    "cupones QR",
+    "código QR promocional",
+    "canje seguro",
+    "ofertas locales",
+    "promociones restaurantes",
+    "fidelización clientes",
+    "marketing local",
+    "anti fraude cupones",
+    "descuentos app",
+    "Klippr B2B",
+    "redenciones",
+    "QR único",
+  ],
+  authors: [{ name: "Klippr" }],
 };
 
 export default function RootLayout({
