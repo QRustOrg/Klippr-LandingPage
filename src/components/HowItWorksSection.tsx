@@ -27,9 +27,9 @@ function ExplorarPanel() {
   const { dict } = useTranslation();
   const filters = dict.howItWorks.panels.explorar.filters;
   const cards = [
-    { name: "The Daily Grind", cat: "Café · 0.3 km", disc: "30% OFF", stars: 5 },
-    { name: "Burger Haven",    cat: "Burgers · 0.7 km", disc: "2×1",   stars: 4 },
-    { name: "Sushi Zen",       cat: "Sushi · 1.2 km",  disc: "15% OFF", stars: 5 },
+    { name: "The Daily Grind", cat: "Café · 0.3 km", disc: "30% OFF", stars: 5, emoji: "☕" },
+    { name: "Burger Haven", cat: "Burgers · 0.7 km", disc: "2×1", stars: 4, emoji: "🍔" },
+    { name: "Sushi Zen", cat: "Sushi · 1.2 km", disc: "15% OFF", stars: 5, emoji: "🍣" },
   ];
   return (
     <div
@@ -62,7 +62,12 @@ function ExplorarPanel() {
           <div className="flex flex-col gap-3">
             {cards.map((c) => (
               <div key={c.name} className="flex items-center gap-3 p-3 rounded-xl border border-[#f3f4f6] hover:border-[#7161ef]/20 transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-[#f3f4f6] shrink-0" />
+                <div
+                  className="w-10 h-10 rounded-lg bg-[#f3f4f6] shrink-0 flex items-center justify-center text-xl leading-none"
+                  aria-hidden
+                >
+                  {c.emoji}
+                </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-medium text-[#1a1a1a] leading-snug">{c.name}</p>
                   <p className="text-[11px] text-[#9ca3af]">{c.cat}</p>

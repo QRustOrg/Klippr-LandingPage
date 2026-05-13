@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import {
   MapPinsIcon,
@@ -25,9 +26,9 @@ const B2B_ICONS: IconComponent[] = [BarChartNumbersIcon, ShieldCheckmarkIcon, To
 /* ── Phone mockup screens ──────────────────────────────────────────── */
 function B2CScreen() {
   const deals = [
-    { name: "The Daily Grind", cat: "Café · 0.3 km", disc: "30% OFF", stars: 5, color: "#7161ef" },
-    { name: "Burger Haven", cat: "Burgers · 0.7 km", disc: "2×1", stars: 4, color: "#a78bfa" },
-    { name: "Sushi Zen", cat: "Sushi · 1.2 km", disc: "15% OFF", stars: 5, color: "#7161ef" },
+    { name: "The Daily Grind", cat: "Café · 0.3 km", disc: "30% OFF", stars: 5, color: "#7161ef", emoji: "☕" },
+    { name: "Burger Haven", cat: "Burgers · 0.7 km", disc: "2×1", stars: 4, color: "#a78bfa", emoji: "🍔" },
+    { name: "Sushi Zen", cat: "Sushi · 1.2 km", disc: "15% OFF", stars: 5, color: "#7161ef", emoji: "🍣" },
   ];
   return (
     <div className="flex flex-col gap-2 px-1">
@@ -51,9 +52,12 @@ function B2CScreen() {
           style={{ borderColor: "#f0eeff", background: "#faf9ff" }}
         >
           <div
-            className="w-7 h-7 rounded-md flex-shrink-0"
+            className="w-7 h-7 rounded-md flex-shrink-0 flex items-center justify-center text-sm leading-none"
             style={{ background: `linear-gradient(135deg, ${d.color}22, ${d.color}44)` }}
-          />
+            aria-hidden
+          >
+            {d.emoji}
+          </div>
           <div className="flex-1 min-w-0">
             <p className="text-[10px] font-semibold text-[#1a1a1a] leading-tight truncate">{d.name}</p>
             <p className="text-[8px] text-[#9ca3af]">{d.cat}</p>
@@ -308,25 +312,14 @@ function PhoneMockup({ activeTab }: { activeTab: Tab }) {
               gap: 6,
             }}
           >
-            <div
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 6,
-                background: "rgba(255,255,255,0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {/* Scissors mini icon */}
-              <svg viewBox="0 0 12 12" width="14" height="14" fill="none">
-                <circle cx="3" cy="9" r="2" stroke="white" strokeWidth="1" />
-                <circle cx="9" cy="9" r="2" stroke="white" strokeWidth="1" />
-                <path d="M4.5 7.5L9 3" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
-                <path d="M7.5 7.5L3 3" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
-              </svg>
-            </div>
+            <Image
+              src="/klippr/klippr.png"
+              alt="Klippr"
+              width={24}
+              height={24}
+              className="rounded-md object-cover shrink-0"
+              sizes="24px"
+            />
             <span style={{ fontSize: 11, fontWeight: 700, color: "white", letterSpacing: 0.5 }}>KLIPPR</span>
             <div style={{ marginLeft: "auto", width: 22, height: 22, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <div style={{ width: 8, height: 8, borderRadius: "50%", background: "white" }} />
