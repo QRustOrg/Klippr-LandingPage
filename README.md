@@ -1,1 +1,0 @@
-## Porfavor leer componentes.md dentro de components/ para entender la estructura del proyecto
