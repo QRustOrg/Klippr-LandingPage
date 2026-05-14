@@ -86,7 +86,7 @@ export function Navbar() {
         {/* Right */}
         <div className="flex items-center gap-3 z-10">
           <Link
-            href="https://github.com/samuelbonifacio015/klippr-new-ui"
+            href="https://github.com/QRustOrg/Klippr-LandingPage"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:inline-flex text-[#6b7280] hover:text-[#1a1a1a] transition-colors duration-150 p-2 rounded-full hover:bg-[#f3f4f6]"

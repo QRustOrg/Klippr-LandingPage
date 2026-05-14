@@ -63,7 +63,7 @@ export function Footer() {
 
                 <div className="flex justify-center mb-24">
                     <Link
-                        href="https://github.com/samuelbonifacio015/klippr-new-ui"
+                        href="https://github.com/QRustOrg/Klippr-LandingPage"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-3 bg-white text-black rounded-full px-6 py-3 font-semibold text-sm hover:bg-gray-100 transition-all hover:scale-105 active:scale-95 shadow-xl"
