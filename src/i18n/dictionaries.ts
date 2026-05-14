@@ -32,6 +32,35 @@ export interface DictionaryComparisonRow {
   klippr: string;
 }
 
+export interface DictionaryExplorarDiscount {
+  title: string;
+  badge: string;
+  detail?: string;
+}
+
+export interface DictionaryExplorarVenue {
+  id: string;
+  name: string;
+  categoryLine: string;
+  categoryKey: string;
+  distanceKm: number;
+  emoji: string;
+  stars: number;
+  listBadge: string;
+  discounts: DictionaryExplorarDiscount[];
+}
+
+export interface DictionaryExplorarFilterCategory {
+  key: string;
+  label: string;
+}
+
+export interface DictionaryExplorarFilterLocation {
+  key: string;
+  label: string;
+  maxKm: number;
+}
+
 export interface Dictionary {
   navbar: {
     home: string;
@@ -63,7 +92,18 @@ export interface Dictionary {
       activar: { qrPersonal: string; validTime: string };
       canjear: { success: string; validated: string; redeemed: string };
       compartir: { question: string; review: string; tags: string[]; submit: string };
-      explorar: { filters: string[] };
+      explorar: {
+        filterAllLabel: string;
+        filterCategories: DictionaryExplorarFilterCategory[];
+        filterLocations: DictionaryExplorarFilterLocation[];
+        filterWithinKmAria: string;
+        filterToolbarAria: string;
+        noResults: string;
+        discountsTitle: string;
+        backToList: string;
+        chooseVenueAria: string;
+        venues: DictionaryExplorarVenue[];
+      };
     };
   };
   benefits: {

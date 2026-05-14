@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   ExploreStepsIcon,
@@ -21,16 +22,34 @@ const STEP_LABELS: Record<StepId, string> = {
   compartir: "Compartir",
 };
 
+type ExplorarActiveFilter =
+  | { type: "all" }
+  | { type: "category"; key: string }
+  | { type: "location"; key: string; maxKm: number };
+
 /* ── Right-side illustration panels ───────────────────────────────── */
 
 function ExplorarPanel() {
   const { dict } = useTranslation();
-  const filters = dict.howItWorks.panels.explorar.filters;
-  const cards = [
-    { name: "The Daily Grind", cat: "Café · 0.3 km", disc: "30% OFF", stars: 5, emoji: "☕" },
-    { name: "Burger Haven", cat: "Burgers · 0.7 km", disc: "2×1", stars: 4, emoji: "🍔" },
-    { name: "Sushi Zen", cat: "Sushi · 1.2 km", disc: "15% OFF", stars: 5, emoji: "🍣" },
-  ];
+  const p = dict.howItWorks.panels.explorar;
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<ExplorarActiveFilter>({ type: "all" });
+
+  const filteredVenues = useMemo(() => {
+    if (activeFilter.type === "all") return p.venues;
+    if (activeFilter.type === "category") {
+      return p.venues.filter((v) => v.categoryKey === activeFilter.key);
+    }
+    return p.venues.filter((v) => v.distanceKm <= activeFilter.maxKm);
+  }, [p.venues, activeFilter]);
+
+  const selected = p.venues.find((v) => v.id === selectedId) ?? null;
+
+  const chipBase =
+    "text-xs font-medium px-3 py-1 rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7161ef]/35";
+  const chipInactive = "border-[#7161ef]/30 text-[#7161ef] bg-[#7161ef]/5 hover:bg-[#7161ef]/10";
+  const chipActive = "border-[#7161ef] bg-[#7161ef] text-white shadow-sm";
+
   return (
     <div
       className="min-h-[70vh] lg:min-h-screen flex items-center justify-center rounded-3xl overflow-hidden my-8"
@@ -47,42 +66,141 @@ function ExplorarPanel() {
         }}
       >
         <div className="bg-white/92 backdrop-blur rounded-2xl p-5">
-          {/* Filter chips */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {filters.map((f) => (
-              <span
-                key={f}
-                className="text-xs px-3 py-1 rounded-full border border-[#7161ef]/30 text-[#7161ef] bg-[#7161ef]/5"
+          {selected ? (
+            <div className="animate-in fade-in duration-200">
+              <button
+                type="button"
+                onClick={() => setSelectedId(null)}
+                className="flex items-center gap-1 text-[12px] font-semibold text-[#7161ef] hover:text-[#5d4edf] mb-3 -ml-1 px-1 py-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7161ef]/40 transition-colors"
               >
-                {f}
-              </span>
-            ))}
-          </div>
-          {/* Cards */}
-          <div className="flex flex-col gap-3">
-            {cards.map((c) => (
-              <div key={c.name} className="flex items-center gap-3 p-3 rounded-xl border border-[#f3f4f6] hover:border-[#7161ef]/20 transition-colors">
+                <ChevronLeft className="w-4 h-4 shrink-0" aria-hidden />
+                {p.backToList}
+              </button>
+              <p className="text-[11px] font-semibold tracking-wide uppercase text-[#6b7280] mb-1">
+                {p.discountsTitle}
+              </p>
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#f3f4f6]">
                 <div
-                  className="w-10 h-10 rounded-lg bg-[#f3f4f6] shrink-0 flex items-center justify-center text-xl leading-none"
+                  className="w-9 h-9 rounded-lg bg-[#f3f4f6] shrink-0 flex items-center justify-center text-lg leading-none"
                   aria-hidden
                 >
-                  {c.emoji}
+                  {selected.emoji}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium text-[#1a1a1a] leading-snug">{c.name}</p>
-                  <p className="text-[11px] text-[#9ca3af]">{c.cat}</p>
-                  <div className="flex mt-0.5">
-                    {Array.from({ length: c.stars }).map((_, i) => (
-                      <span key={i} className="text-[10px] text-yellow-400">★</span>
-                    ))}
-                  </div>
+                <div className="min-w-0">
+                  <p className="text-[14px] font-semibold text-[#1a1a1a] leading-tight">{selected.name}</p>
+                  <p className="text-[11px] text-[#9ca3af]">{selected.categoryLine}</p>
                 </div>
-                <span className="text-[11px] font-bold text-white bg-[#7161ef] rounded-full px-2 py-0.5 shrink-0">
-                  {c.disc}
-                </span>
               </div>
-            ))}
-          </div>
+              <ul className="flex flex-col gap-2.5 list-none p-0 m-0" aria-live="polite">
+                {selected.discounts.map((d, i) => (
+                  <li
+                    key={`${selected.id}-promo-${i}`}
+                    className="flex items-start gap-3 p-3 rounded-xl border border-[#f3f4f6] bg-[#fafafa]/80"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-medium text-[#1a1a1a] leading-snug">{d.title}</p>
+                      {d.detail ? (
+                        <p className="text-[11px] text-[#6b7280] mt-0.5">{d.detail}</p>
+                      ) : null}
+                    </div>
+                    <span className="text-[11px] font-bold text-white bg-[#7161ef] rounded-full px-2 py-0.5 shrink-0 self-center">
+                      {d.badge}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div className="animate-in fade-in duration-200">
+              <div className="flex flex-wrap gap-2 mb-4" role="toolbar" aria-label={p.filterToolbarAria}>
+                <button
+                  type="button"
+                  onClick={() => setActiveFilter({ type: "all" })}
+                  className={cn(chipBase, activeFilter.type === "all" ? chipActive : chipInactive)}
+                  aria-pressed={activeFilter.type === "all"}
+                >
+                  {p.filterAllLabel}
+                </button>
+                {p.filterCategories.map((c) => {
+                  const pressed =
+                    activeFilter.type === "category" && activeFilter.key === c.key;
+                  return (
+                    <button
+                      key={c.key}
+                      type="button"
+                      onClick={() => setActiveFilter({ type: "category", key: c.key })}
+                      className={cn(chipBase, pressed ? chipActive : chipInactive)}
+                      aria-pressed={pressed}
+                    >
+                      {c.label}
+                    </button>
+                  );
+                })}
+                {p.filterLocations.map((loc) => {
+                  const pressed =
+                    activeFilter.type === "location" && activeFilter.key === loc.key;
+                  const ariaLabel = `${loc.label}, ${p.filterWithinKmAria.replace("{n}", String(loc.maxKm))}`;
+                  return (
+                    <button
+                      key={loc.key}
+                      type="button"
+                      onClick={() =>
+                        setActiveFilter({ type: "location", key: loc.key, maxKm: loc.maxKm })
+                      }
+                      className={cn(chipBase, pressed ? chipActive : chipInactive)}
+                      aria-pressed={pressed}
+                      aria-label={ariaLabel}
+                    >
+                      {loc.label}
+                    </button>
+                  );
+                })}
+              </div>
+              {filteredVenues.length === 0 ? (
+                <p className="text-[13px] text-[#6b7280] text-center py-8 px-2 leading-relaxed" role="status">
+                  {p.noResults}
+                </p>
+              ) : (
+                <ul className="flex flex-col gap-3 list-none p-0 m-0">
+                  {filteredVenues.map((v) => (
+                    <li key={v.id}>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedId(v.id)}
+                        className={cn(
+                          "flex items-center gap-3 p-3 rounded-xl border text-left w-full transition-colors",
+                          "border-[#f3f4f6] hover:border-[#7161ef]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7161ef]/35",
+                          "hover:bg-[#7161ef]/3"
+                        )}
+                        aria-label={`${p.chooseVenueAria} ${v.name}`}
+                      >
+                        <div
+                          className="w-10 h-10 rounded-lg bg-[#f3f4f6] shrink-0 flex items-center justify-center text-xl leading-none"
+                          aria-hidden
+                        >
+                          {v.emoji}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[13px] font-medium text-[#1a1a1a] leading-snug">{v.name}</p>
+                          <p className="text-[11px] text-[#9ca3af]">{v.categoryLine}</p>
+                          <div className="flex mt-0.5">
+                            {Array.from({ length: v.stars }).map((_, i) => (
+                              <span key={i} className="text-[10px] text-yellow-400">
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <span className="text-[11px] font-bold text-white bg-[#7161ef] rounded-full px-2 py-0.5 shrink-0">
+                          {v.listBadge}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

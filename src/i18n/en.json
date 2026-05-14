@@ -79,7 +79,102 @@
         "submit": "Post review"
       },
       "explorar": {
-        "filters": ["🍔 Food", "📍 Nearby", "⭐ +4.5", "🏷️ -30%"]
+        "filterAllLabel": "All",
+        "filterCategories": [
+          { "key": "cafe", "label": "Coffee" },
+          { "key": "burger", "label": "Burgers" },
+          { "key": "sushi", "label": "Sushi" }
+        ],
+        "filterLocations": [{ "key": "nearby", "label": "Nearby", "maxKm": 1 }],
+        "filterWithinKmAria": "Within {n} km",
+        "filterToolbarAria": "Filters for the place list",
+        "noResults": "No places match this filter.",
+        "discountsTitle": "Available deals",
+        "backToList": "All places",
+        "chooseVenueAria": "View promotions for",
+        "venues": [
+          {
+            "id": "daily-grind",
+            "name": "The Daily Grind",
+            "categoryLine": "Coffee · 0.3 km",
+            "categoryKey": "cafe",
+            "distanceKm": 0.3,
+            "emoji": "☕",
+            "stars": 5,
+            "listBadge": "30% OFF",
+            "discounts": [
+              {
+                "title": "Specialty coffee",
+                "badge": "30% OFF",
+                "detail": "Mon–Fri until 11:00"
+              },
+              {
+                "title": "Pastry with your drink",
+                "badge": "2×1",
+                "detail": "Weekends"
+              },
+              {
+                "title": "Full breakfast",
+                "badge": "-15%",
+                "detail": "Includes muffin and juice"
+              }
+            ]
+          },
+          {
+            "id": "burger-haven",
+            "name": "Burger Haven",
+            "categoryLine": "Burgers · 0.7 km",
+            "categoryKey": "burger",
+            "distanceKm": 0.7,
+            "emoji": "🍔",
+            "stars": 4,
+            "listBadge": "2×1",
+            "discounts": [
+              {
+                "title": "Classic double",
+                "badge": "2×1",
+                "detail": "Monday and Tuesday"
+              },
+              {
+                "title": "Burger + drink combo",
+                "badge": "-20%",
+                "detail": "Counter orders"
+              },
+              {
+                "title": "Afternoon snack",
+                "badge": "-10%",
+                "detail": "3:00–6:00 PM"
+              }
+            ]
+          },
+          {
+            "id": "sushi-zen",
+            "name": "Sushi Zen",
+            "categoryLine": "Sushi · 1.2 km",
+            "categoryKey": "sushi",
+            "distanceKm": 1.2,
+            "emoji": "🍣",
+            "stars": 5,
+            "listBadge": "15% OFF",
+            "discounts": [
+              {
+                "title": "Chef’s premium roll",
+                "badge": "15% OFF",
+                "detail": "Min. 2 rolls"
+              },
+              {
+                "title": "Lunch set",
+                "badge": "-12%",
+                "detail": "12:00–3:00 PM"
+              },
+              {
+                "title": "Second bottle of sake",
+                "badge": "-25%",
+                "detail": "Thursday evenings"
+              }
+            ]
+          }
+        ]
       }
     }
   },
