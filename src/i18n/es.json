@@ -91,7 +91,11 @@
         "noResults": "Ningún local coincide con este filtro.",
         "discountsTitle": "Promociones disponibles",
         "backToList": "Todos los locales",
+        "backToPromotions": "Promociones del local",
+        "promoConditionsHeading": "Condiciones",
+        "promoValidityHeading": "Vigencia",
         "chooseVenueAria": "Ver promociones de",
+        "choosePromoAria": "Ver detalle de",
         "venues": [
           {
             "id": "daily-grind",
@@ -106,17 +110,20 @@
               {
                 "title": "Café de especialidad",
                 "badge": "30% OFF",
-                "detail": "Lun–vie hasta las 11:00"
+                "conditions": "Solo bebidas de especialidad de carta; no acumulable con otras promociones.",
+                "validity": "Lun–vie hasta las 11:00"
               },
               {
                 "title": "Postre con tu bebida",
                 "badge": "2×1",
-                "detail": "Sábados y domingos"
+                "conditions": "El postre gratis debe ser de igual o menor precio que la bebida.",
+                "validity": "Sábados y domingos"
               },
               {
                 "title": "Desayuno completo",
                 "badge": "-15%",
-                "detail": "Incluye muffin y jugo"
+                "conditions": "Incluye plato principal, muffin y jugo según menú desayuno.",
+                "validity": "Según horario publicado en el local"
               }
             ]
           },
@@ -133,17 +140,20 @@
               {
                 "title": "Clásica doble",
                 "badge": "2×1",
-                "detail": "Lunes y martes"
+                "conditions": "La segunda burger debe ser la misma receta; extras con costo aparte.",
+                "validity": "Lunes y martes"
               },
               {
                 "title": "Combo burger + bebida",
                 "badge": "-20%",
-                "detail": "Aplica en mostrador"
+                "conditions": "Válido solo en pedidos en mostrador; no delivery ni apps de terceros.",
+                "validity": "Todos los días en horario de comidas"
               },
               {
                 "title": "Merienda express",
                 "badge": "-10%",
-                "detail": "15:00–18:00"
+                "conditions": "Aplica a ítems de la sección merienda; un uso por ticket.",
+                "validity": "15:00–18:00"
               }
             ]
           },
@@ -160,17 +170,20 @@
               {
                 "title": "Roll premium del chef",
                 "badge": "15% OFF",
-                "detail": "Mín. 2 rolls"
+                "conditions": "Pedido mínimo de 2 rolls premium; propina no incluida en el descuento.",
+                "validity": "Noches de viernes y sábado"
               },
               {
                 "title": "Menú lunch",
                 "badge": "-12%",
-                "detail": "12:00–15:00"
+                "conditions": "Menú fijo del día; cambios de pieza sujetos a disponibilidad del chef.",
+                "validity": "12:00–15:00"
               },
               {
                 "title": "Segunda botella de sake",
                 "badge": "-25%",
-                "detail": "Noches de jueves"
+                "conditions": "Sobre la botella de menor precio; consumo en salón únicamente.",
+                "validity": "Noches de jueves"
               }
             ]
           }

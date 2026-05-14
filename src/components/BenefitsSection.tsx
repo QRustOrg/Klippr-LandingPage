@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   MapPinsIcon,
@@ -14,6 +15,7 @@ import {
   StarReplyIcon,
 } from "./icons";
 import { useTranslation } from "@/i18n/useTranslation";
+import { filterExplorarVenues, type ExplorarActiveFilter } from "@/lib/explorar-demo";
 
 /* ── Types ────────────────────────────────────────────────────────── */
 type Tab = "b2c" | "b2b";
@@ -25,56 +27,215 @@ const B2B_ICONS: IconComponent[] = [BarChartNumbersIcon, ShieldCheckmarkIcon, To
 
 /* ── Phone mockup screens ──────────────────────────────────────────── */
 function B2CScreen() {
-  const deals = [
-    { name: "The Daily Grind", cat: "Café · 0.3 km", disc: "30% OFF", stars: 5, color: "#7161ef", emoji: "☕" },
-    { name: "Burger Haven", cat: "Burgers · 0.7 km", disc: "2×1", stars: 4, color: "#a78bfa", emoji: "🍔" },
-    { name: "Sushi Zen", cat: "Sushi · 1.2 km", disc: "15% OFF", stars: 5, color: "#7161ef", emoji: "🍣" },
-  ];
+  const { dict } = useTranslation();
+  const p = dict.howItWorks.panels.explorar;
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedPromoIndex, setSelectedPromoIndex] = useState<number | null>(null);
+  const [activeFilter, setActiveFilter] = useState<ExplorarActiveFilter>({ type: "all" });
+
+  const filteredVenues = useMemo(
+    () => filterExplorarVenues(p.venues, activeFilter),
+    [p.venues, activeFilter]
+  );
+
+  const selected = p.venues.find((v) => v.id === selectedId) ?? null;
+  const selectedPromo =
+    selected && selectedPromoIndex !== null
+      ? (selected.discounts[selectedPromoIndex] ?? null)
+      : null;
+
+  const venueAccent = (venueId: string) => {
+    const ix = p.venues.findIndex((v) => v.id === venueId);
+    return (ix >= 0 && ix % 2 === 1 ? "#a78bfa" : "#7161ef") as string;
+  };
+
+  const chipBase =
+    "text-[9px] font-medium px-2 py-0.5 rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7161ef]/50";
+  const chipInactive = "border-[rgba(113,97,239,0.35)] text-[#7161ef] bg-[rgba(113,97,239,0.06)]";
+  const chipActive = "border-[#7161ef] bg-[#7161ef] text-white";
+
+  const scrollWrap = { maxHeight: 318, overflowY: "auto" as const, overflowX: "hidden" as const };
+
   return (
-    <div className="flex flex-col gap-2 px-1">
-      {/* Filter chips */}
-      <div className="flex gap-1.5 flex-wrap mb-1">
-        {["🍔 Comida", "📍 Cerca", "⭐ +4.5"].map((f) => (
-          <span
-            key={f}
-            className="text-[9px] px-2 py-0.5 rounded-full border"
-            style={{ borderColor: "rgba(113,97,239,0.35)", color: "#7161ef", background: "rgba(113,97,239,0.06)" }}
+    <div style={scrollWrap} className="px-0.5">
+      {selected && selectedPromo ? (
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => setSelectedPromoIndex(null)}
+            className="flex items-center gap-0.5 text-[9px] font-semibold text-[#7161ef] -ml-0.5 py-0.5 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7161ef]/40"
           >
-            {f}
-          </span>
-        ))}
-      </div>
-      {/* Deal cards */}
-      {deals.map((d) => (
-        <div
-          key={d.name}
-          className="flex items-center gap-2 p-2 rounded-lg border"
-          style={{ borderColor: "#f0eeff", background: "#faf9ff" }}
-        >
-          <div
-            className="w-7 h-7 rounded-md flex-shrink-0 flex items-center justify-center text-sm leading-none"
-            style={{ background: `linear-gradient(135deg, ${d.color}22, ${d.color}44)` }}
-            aria-hidden
-          >
-            {d.emoji}
+            <ChevronLeft className="w-3 h-3 shrink-0" aria-hidden />
+            {p.backToPromotions}
+          </button>
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-[10px] font-semibold text-[#1a1a1a] leading-tight flex-1 min-w-0">{selectedPromo.title}</p>
+            <span
+              className="text-[8px] font-bold text-white rounded-full px-1.5 py-0.5 shrink-0"
+              style={{ background: venueAccent(selected.id) }}
+            >
+              {selectedPromo.badge}
+            </span>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-semibold text-[#1a1a1a] leading-tight truncate">{d.name}</p>
-            <p className="text-[8px] text-[#9ca3af]">{d.cat}</p>
-            <div className="flex gap-0.5 mt-0.5">
-              {Array.from({ length: d.stars }).map((_, i) => (
-                <span key={i} className="text-[7px] text-yellow-400">★</span>
-              ))}
+          <div>
+            <p className="text-[7px] font-bold uppercase tracking-wide text-[#6b7280] mb-0.5">{p.promoConditionsHeading}</p>
+            <p className="text-[8px] text-[#374151] leading-snug">{selectedPromo.conditions}</p>
+          </div>
+          <div>
+            <p className="text-[7px] font-bold uppercase tracking-wide text-[#6b7280] mb-0.5">{p.promoValidityHeading}</p>
+            <p className="text-[8px] text-[#374151] leading-snug">{selectedPromo.validity}</p>
+          </div>
+        </div>
+      ) : selected ? (
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedId(null);
+              setSelectedPromoIndex(null);
+            }}
+            className="flex items-center gap-0.5 text-[9px] font-semibold text-[#7161ef] -ml-0.5 py-0.5 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7161ef]/40"
+          >
+            <ChevronLeft className="w-3 h-3 shrink-0" aria-hidden />
+            {p.backToList}
+          </button>
+          <p className="text-[7px] font-bold uppercase tracking-wide text-[#6b7280]">{p.discountsTitle}</p>
+          <div className="flex items-center gap-2 pb-2 border-b border-[#f3f4f6]">
+            <div
+              className="w-7 h-7 rounded-md shrink-0 flex items-center justify-center text-sm leading-none bg-[#f3f4f6]"
+              aria-hidden
+            >
+              {selected.emoji}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-semibold text-[#1a1a1a] leading-tight truncate">{selected.name}</p>
+              <p className="text-[8px] text-[#9ca3af]">{selected.categoryLine}</p>
             </div>
           </div>
-          <span
-            className="text-[8px] font-bold text-white rounded-full px-1.5 py-0.5 flex-shrink-0"
-            style={{ background: d.color }}
-          >
-            {d.disc}
-          </span>
+          <ul className="flex flex-col gap-1.5 list-none p-0 m-0">
+            {selected.discounts.map((d, i) => (
+              <li key={`${selected.id}-p-${i}`}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPromoIndex(i)}
+                  className={cn(
+                    "w-full flex items-start gap-2 p-2 rounded-lg border text-left transition-colors",
+                    "border-[#f0eeff] bg-[#faf9ff] hover:border-[#7161ef]/35",
+                    "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7161ef]/40"
+                  )}
+                  aria-label={`${p.choosePromoAria} ${d.title}`}
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] font-semibold text-[#1a1a1a] leading-tight">{d.title}</p>
+                    <p className="text-[8px] text-[#6b7280] mt-0.5 line-clamp-2">{d.conditions}</p>
+                  </div>
+                  <span
+                    className="text-[8px] font-bold text-white rounded-full px-1.5 py-0.5 shrink-0 self-center"
+                    style={{ background: venueAccent(selected.id) }}
+                  >
+                    {d.badge}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-      ))}
+      ) : (
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-1.5 flex-wrap mb-0.5" role="toolbar" aria-label={p.filterToolbarAria}>
+            <button
+              type="button"
+              onClick={() => setActiveFilter({ type: "all" })}
+              className={cn(chipBase, activeFilter.type === "all" ? chipActive : chipInactive)}
+              aria-pressed={activeFilter.type === "all"}
+            >
+              {p.filterAllLabel}
+            </button>
+            {p.filterCategories.map((c) => {
+              const pressed = activeFilter.type === "category" && activeFilter.key === c.key;
+              return (
+                <button
+                  key={c.key}
+                  type="button"
+                  onClick={() => setActiveFilter({ type: "category", key: c.key })}
+                  className={cn(chipBase, pressed ? chipActive : chipInactive)}
+                  aria-pressed={pressed}
+                >
+                  {c.label}
+                </button>
+              );
+            })}
+            {p.filterLocations.map((loc) => {
+              const pressed = activeFilter.type === "location" && activeFilter.key === loc.key;
+              const ariaLabel = `${loc.label}, ${p.filterWithinKmAria.replace("{n}", String(loc.maxKm))}`;
+              return (
+                <button
+                  key={loc.key}
+                  type="button"
+                  onClick={() => setActiveFilter({ type: "location", key: loc.key, maxKm: loc.maxKm })}
+                  className={cn(chipBase, pressed ? chipActive : chipInactive)}
+                  aria-pressed={pressed}
+                  aria-label={ariaLabel}
+                >
+                  {loc.label}
+                </button>
+              );
+            })}
+          </div>
+          {filteredVenues.length === 0 ? (
+            <p className="text-[8px] text-[#6b7280] text-center py-4 px-1 leading-relaxed" role="status">
+              {p.noResults}
+            </p>
+          ) : (
+            <div className="flex flex-col gap-1.5">
+              {filteredVenues.map((v) => {
+                const color = venueAccent(v.id);
+                return (
+                  <button
+                    key={v.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedId(v.id);
+                      setSelectedPromoIndex(null);
+                    }}
+                    className={cn(
+                      "flex items-center gap-2 p-2 rounded-lg border text-left w-full transition-colors",
+                      "border-[#f0eeff] bg-[#faf9ff] hover:border-[#7161ef]/30",
+                      "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7161ef]/40"
+                    )}
+                    aria-label={`${p.chooseVenueAria} ${v.name}`}
+                  >
+                    <div
+                      className="w-7 h-7 rounded-md flex-shrink-0 flex items-center justify-center text-sm leading-none"
+                      style={{ background: `linear-gradient(135deg, ${color}22, ${color}44)` }}
+                      aria-hidden
+                    >
+                      {v.emoji}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] font-semibold text-[#1a1a1a] leading-tight truncate">{v.name}</p>
+                      <p className="text-[8px] text-[#9ca3af]">{v.categoryLine}</p>
+                      <div className="flex gap-0.5 mt-0.5">
+                        {Array.from({ length: v.stars }).map((_, i) => (
+                          <span key={i} className="text-[7px] text-yellow-400">
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <span
+                      className="text-[8px] font-bold text-white rounded-full px-1.5 py-0.5 flex-shrink-0"
+                      style={{ background: color }}
+                    >
+                      {v.listBadge}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

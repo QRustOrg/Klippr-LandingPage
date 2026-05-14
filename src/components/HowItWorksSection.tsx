@@ -10,6 +10,7 @@ import {
   ShareStarsIcon,
 } from "./icons";
 import { useTranslation } from "@/i18n/useTranslation";
+import { filterExplorarVenues, type ExplorarActiveFilter } from "@/lib/explorar-demo";
 
 /* ── Step data ─────────────────────────────────────────────────────── */
 type StepId = "explorar" | "activar" | "canjear" | "compartir";
@@ -22,28 +23,25 @@ const STEP_LABELS: Record<StepId, string> = {
   compartir: "Compartir",
 };
 
-type ExplorarActiveFilter =
-  | { type: "all" }
-  | { type: "category"; key: string }
-  | { type: "location"; key: string; maxKm: number };
-
 /* ── Right-side illustration panels ───────────────────────────────── */
 
 function ExplorarPanel() {
   const { dict } = useTranslation();
   const p = dict.howItWorks.panels.explorar;
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedPromoIndex, setSelectedPromoIndex] = useState<number | null>(null);
   const [activeFilter, setActiveFilter] = useState<ExplorarActiveFilter>({ type: "all" });
 
-  const filteredVenues = useMemo(() => {
-    if (activeFilter.type === "all") return p.venues;
-    if (activeFilter.type === "category") {
-      return p.venues.filter((v) => v.categoryKey === activeFilter.key);
-    }
-    return p.venues.filter((v) => v.distanceKm <= activeFilter.maxKm);
-  }, [p.venues, activeFilter]);
+  const filteredVenues = useMemo(
+    () => filterExplorarVenues(p.venues, activeFilter),
+    [p.venues, activeFilter]
+  );
 
   const selected = p.venues.find((v) => v.id === selectedId) ?? null;
+  const selectedPromo =
+    selected && selectedPromoIndex !== null
+      ? (selected.discounts[selectedPromoIndex] ?? null)
+      : null;
 
   const chipBase =
     "text-xs font-medium px-3 py-1 rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7161ef]/35";
@@ -66,11 +64,45 @@ function ExplorarPanel() {
         }}
       >
         <div className="bg-white/92 backdrop-blur rounded-2xl p-5">
-          {selected ? (
+          {selected && selectedPromo ? (
             <div className="animate-in fade-in duration-200">
               <button
                 type="button"
-                onClick={() => setSelectedId(null)}
+                onClick={() => setSelectedPromoIndex(null)}
+                className="flex items-center gap-1 text-[12px] font-semibold text-[#7161ef] hover:text-[#5d4edf] mb-3 -ml-1 px-1 py-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7161ef]/40 transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4 shrink-0" aria-hidden />
+                {p.backToPromotions}
+              </button>
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <h3 className="text-[15px] font-semibold text-[#1a1a1a] leading-snug">{selectedPromo.title}</h3>
+                <span className="text-[11px] font-bold text-white bg-[#7161ef] rounded-full px-2.5 py-0.5 shrink-0">
+                  {selectedPromo.badge}
+                </span>
+              </div>
+              <div className="flex flex-col gap-4" role="region" aria-label={selectedPromo.title}>
+                <div>
+                  <p className="text-[10px] font-semibold tracking-wide uppercase text-[#6b7280] mb-1.5">
+                    {p.promoConditionsHeading}
+                  </p>
+                  <p className="text-[12px] text-[#374151] leading-relaxed">{selectedPromo.conditions}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold tracking-wide uppercase text-[#6b7280] mb-1.5">
+                    {p.promoValidityHeading}
+                  </p>
+                  <p className="text-[12px] text-[#374151] leading-relaxed">{selectedPromo.validity}</p>
+                </div>
+              </div>
+            </div>
+          ) : selected ? (
+            <div className="animate-in fade-in duration-200">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedId(null);
+                  setSelectedPromoIndex(null);
+                }}
                 className="flex items-center gap-1 text-[12px] font-semibold text-[#7161ef] hover:text-[#5d4edf] mb-3 -ml-1 px-1 py-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7161ef]/40 transition-colors"
               >
                 <ChevronLeft className="w-4 h-4 shrink-0" aria-hidden />
@@ -93,19 +125,25 @@ function ExplorarPanel() {
               </div>
               <ul className="flex flex-col gap-2.5 list-none p-0 m-0" aria-live="polite">
                 {selected.discounts.map((d, i) => (
-                  <li
-                    key={`${selected.id}-promo-${i}`}
-                    className="flex items-start gap-3 p-3 rounded-xl border border-[#f3f4f6] bg-[#fafafa]/80"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium text-[#1a1a1a] leading-snug">{d.title}</p>
-                      {d.detail ? (
-                        <p className="text-[11px] text-[#6b7280] mt-0.5">{d.detail}</p>
-                      ) : null}
-                    </div>
-                    <span className="text-[11px] font-bold text-white bg-[#7161ef] rounded-full px-2 py-0.5 shrink-0 self-center">
-                      {d.badge}
-                    </span>
+                  <li key={`${selected.id}-promo-${i}`}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPromoIndex(i)}
+                      className={cn(
+                        "flex items-start gap-3 p-3 rounded-xl border text-left w-full transition-colors",
+                        "border-[#f3f4f6] bg-[#fafafa]/80 hover:border-[#7161ef]/35 hover:bg-[#7161ef]/[0.04]",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7161ef]/35"
+                      )}
+                      aria-label={`${p.choosePromoAria} ${d.title}`}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium text-[#1a1a1a] leading-snug">{d.title}</p>
+                        <p className="text-[11px] text-[#6b7280] mt-0.5 line-clamp-2">{d.conditions}</p>
+                      </div>
+                      <span className="text-[11px] font-bold text-white bg-[#7161ef] rounded-full px-2 py-0.5 shrink-0 self-center">
+                        {d.badge}
+                      </span>
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -166,7 +204,10 @@ function ExplorarPanel() {
                     <li key={v.id}>
                       <button
                         type="button"
-                        onClick={() => setSelectedId(v.id)}
+                        onClick={() => {
+                          setSelectedId(v.id);
+                          setSelectedPromoIndex(null);
+                        }}
                         className={cn(
                           "flex items-center gap-3 p-3 rounded-xl border text-left w-full transition-colors",
                           "border-[#f3f4f6] hover:border-[#7161ef]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7161ef]/35",

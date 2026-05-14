@@ -35,7 +35,8 @@ export interface DictionaryComparisonRow {
 export interface DictionaryExplorarDiscount {
   title: string;
   badge: string;
-  detail?: string;
+  conditions: string;
+  validity: string;
 }
 
 export interface DictionaryExplorarVenue {
@@ -101,7 +102,11 @@ export interface Dictionary {
         noResults: string;
         discountsTitle: string;
         backToList: string;
+        backToPromotions: string;
+        promoConditionsHeading: string;
+        promoValidityHeading: string;
         chooseVenueAria: string;
+        choosePromoAria: string;
         venues: DictionaryExplorarVenue[];
       };
     };

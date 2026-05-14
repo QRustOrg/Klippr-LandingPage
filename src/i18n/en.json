@@ -91,7 +91,11 @@
         "noResults": "No places match this filter.",
         "discountsTitle": "Available deals",
         "backToList": "All places",
+        "backToPromotions": "Place deals",
+        "promoConditionsHeading": "Conditions",
+        "promoValidityHeading": "Validity",
         "chooseVenueAria": "View promotions for",
+        "choosePromoAria": "View details for",
         "venues": [
           {
             "id": "daily-grind",
@@ -106,17 +110,20 @@
               {
                 "title": "Specialty coffee",
                 "badge": "30% OFF",
-                "detail": "Mon–Fri until 11:00"
+                "conditions": "Menu specialty drinks only; cannot be combined with other promotions.",
+                "validity": "Mon–Fri until 11:00"
               },
               {
                 "title": "Pastry with your drink",
                 "badge": "2×1",
-                "detail": "Weekends"
+                "conditions": "The free pastry must be the same price or less than the drink.",
+                "validity": "Saturdays and Sundays"
               },
               {
                 "title": "Full breakfast",
                 "badge": "-15%",
-                "detail": "Includes muffin and juice"
+                "conditions": "Includes main plate, muffin, and juice per breakfast menu.",
+                "validity": "During posted opening hours"
               }
             ]
           },
@@ -133,17 +140,20 @@
               {
                 "title": "Classic double",
                 "badge": "2×1",
-                "detail": "Monday and Tuesday"
+                "conditions": "Second burger must be the same recipe; extras charged separately.",
+                "validity": "Monday and Tuesday"
               },
               {
                 "title": "Burger + drink combo",
                 "badge": "-20%",
-                "detail": "Counter orders"
+                "conditions": "Counter orders only; not valid for delivery or third-party apps.",
+                "validity": "Daily during lunch service"
               },
               {
                 "title": "Afternoon snack",
                 "badge": "-10%",
-                "detail": "3:00–6:00 PM"
+                "conditions": "Applies to snack-menu items; one redemption per ticket.",
+                "validity": "3:00–6:00 PM"
               }
             ]
           },
@@ -160,17 +170,20 @@
               {
                 "title": "Chef’s premium roll",
                 "badge": "15% OFF",
-                "detail": "Min. 2 rolls"
+                "conditions": "Minimum 2 premium rolls; tip not included in the discount.",
+                "validity": "Friday and Saturday evenings"
               },
               {
                 "title": "Lunch set",
                 "badge": "-12%",
-                "detail": "12:00–3:00 PM"
+                "conditions": "Fixed lunch menu; fish swaps subject to chef’s availability.",
+                "validity": "12:00–3:00 PM"
               },
               {
                 "title": "Second bottle of sake",
                 "badge": "-25%",
-                "detail": "Thursday evenings"
+                "conditions": "Applies to the lower-priced bottle; dine-in only.",
+                "validity": "Thursday evenings"
               }
             ]
           }
