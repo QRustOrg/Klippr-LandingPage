@@ -80,6 +80,16 @@ export interface Dictionary {
     ctaSecondary: string;
     imageAlt: string;
   };
+  videos: {
+    heading: string;
+    subheading: string;
+    productTitle: string;
+    productDescription: string;
+    productIframeTitle: string;
+    teamTitle: string;
+    teamDescription: string;
+    teamIframeTitle: string;
+  };
   painPoints: {
     label: string;
     heading: string;

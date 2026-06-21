@@ -16,6 +16,16 @@
     "ctaSecondary": "Own a business? See how Klippr helps you →",
     "imageAlt": "Klippr app — promotions feed with discounts"
   },
+  "videos": {
+    "heading": "See Klippr in action",
+    "subheading": "Watch how the experience works for users and meet the people behind the platform.",
+    "productTitle": "About the product",
+    "productDescription": "A quick walkthrough of the Klippr experience: real discounts, unique QR codes, and secure in-store redemptions.",
+    "productIframeTitle": "Video about the Klippr product",
+    "teamTitle": "About the team",
+    "teamDescription": "Meet the team building Klippr and the vision behind a trusted promotions community.",
+    "teamIframeTitle": "Video about the Klippr team"
+  },
   "painPoints": {
     "label": "Before Klippr",
     "heading": "You've been through this.",
