@@ -217,14 +217,14 @@ function ExplorarPanel({ promotions, dataState }: PanelProps) {
       className="min-h-[70vh] lg:min-h-screen flex items-center justify-center rounded-3xl overflow-hidden my-8"
       style={{
         background:
-          "radial-gradient(900px 520px at 22% 18%, rgba(113,97,239,0.16) 0%, rgba(113,97,239,0.00) 58%), radial-gradient(740px 460px at 86% 78%, rgba(167,139,250,0.12) 0%, rgba(167,139,250,0.00) 55%), linear-gradient(135deg, rgba(113,97,239,0.10) 0%, rgba(255,255,255,0.00) 52%, rgba(113,97,239,0.05) 100%)",
+          "radial-gradient(900px 520px at 22% 18%, rgba(251,146,60,0.22) 0%, rgba(251,146,60,0.00) 58%), radial-gradient(740px 460px at 86% 78%, rgba(113,97,239,0.16) 0%, rgba(113,97,239,0.00) 55%), linear-gradient(135deg, rgba(251,146,60,0.12) 0%, rgba(255,255,255,0.00) 50%, rgba(113,97,239,0.09) 100%)",
       }}
     >
       <div
         className="rounded-2xl p-px mx-4 w-full max-w-sm shadow-[0_18px_55px_rgba(17,24,39,0.10)]"
         style={{
           background:
-            "radial-gradient(140px 120px at 18% 10%, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.00) 65%), linear-gradient(135deg, rgba(113,97,239,0.22) 0%, rgba(167,139,250,0.14) 32%, rgba(255,255,255,0.00) 78%)",
+            "radial-gradient(140px 120px at 18% 10%, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.00) 65%), linear-gradient(135deg, rgba(251,146,60,0.24) 0%, rgba(113,97,239,0.15) 38%, rgba(255,255,255,0.00) 78%)",
         }}
       >
         <div className="bg-white/92 backdrop-blur rounded-2xl p-5">
@@ -420,7 +420,6 @@ function CanjearPanel({ featuredPromotion }: PanelProps) {
         <div className="bg-white/92 backdrop-blur rounded-2xl p-6 flex flex-col items-center gap-4">
           <div className="relative h-[132px] w-full overflow-hidden rounded-xl bg-[#f3f4f6]">
             <Image src={featuredPromotion.imageSrc} alt={featuredPromotion.title} fill className="object-cover" sizes="260px" />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/45" />
             <span className="absolute bottom-3 left-3 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#7161ef]">
               {featuredPromotion.discountLabel}
             </span>
