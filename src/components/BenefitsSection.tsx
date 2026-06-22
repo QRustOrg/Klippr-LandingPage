@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
@@ -28,9 +28,10 @@ import {
   TogglePanelIcon,
   StarReplyIcon,
 } from "./icons";
+import { BusinessSimulator } from "./BusinessSimulator";
 import { useTranslation } from "@/i18n/useTranslation";
 
-/* ── Types ────────────────────────────────────────────────────────── */
+/* â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 type Tab = "b2c" | "b2b";
 
 type IconComponent = React.ComponentType<{ className?: string }>;
@@ -131,42 +132,42 @@ const FALLBACK_PROMOTIONS: PromotionResource[] = [
 const PROMO_VISUALS = {
   comida_hamburguesas: {
     categoryKey: "food",
-    emoji: "🍔",
+    emoji: "ðŸ”",
     background:
       "radial-gradient(circle at 24% 42%, rgba(255,184,77,0.96) 0 10%, transparent 22%), radial-gradient(circle at 68% 36%, rgba(255,231,173,0.8) 0 7%, transparent 20%), linear-gradient(135deg, #211714 0%, #6f3716 42%, #f59e0b 100%)",
     accent: "#f59e0b",
   },
   comida_pollo_frito: {
     categoryKey: "food",
-    emoji: "🍗",
+    emoji: "ðŸ—",
     background:
       "radial-gradient(circle at 68% 26%, rgba(255,237,213,0.82) 0 8%, transparent 20%), linear-gradient(135deg, #3f1d0b 0%, #b45309 52%, #fb923c 100%)",
     accent: "#ea580c",
   },
   comida_ceviche: {
     categoryKey: "food",
-    emoji: "🐟",
+    emoji: "ðŸŸ",
     background:
       "radial-gradient(circle at 72% 34%, rgba(255,255,255,0.9) 0 8%, transparent 20%), linear-gradient(135deg, #e0f2fe 0%, #38bdf8 45%, #0f766e 100%)",
     accent: "#0ea5e9",
   },
   deportes_futbol: {
     categoryKey: "sports",
-    emoji: "⚽",
+    emoji: "âš½",
     background:
       "radial-gradient(circle at 30% 70%, rgba(255,255,255,0.86) 0 8%, transparent 19%), linear-gradient(135deg, #020617 0%, #1d4ed8 48%, #22c55e 100%)",
     accent: "#2563eb",
   },
   salud_pastillas: {
     categoryKey: "health",
-    emoji: "💊",
+    emoji: "ðŸ’Š",
     background:
       "radial-gradient(circle at 64% 36%, rgba(255,255,255,0.92) 0 7%, transparent 19%), linear-gradient(135deg, #dbeafe 0%, #93c5fd 46%, #f87171 100%)",
     accent: "#60a5fa",
   },
   entretenimiento_cine: {
     categoryKey: "entertainment",
-    emoji: "🎬",
+    emoji: "ðŸŽ¬",
     background:
       "radial-gradient(circle at 72% 22%, rgba(255,255,255,0.78) 0 6%, transparent 18%), linear-gradient(135deg, #292524 0%, #7c2d12 44%, #a78bfa 100%)",
     accent: "#a78bfa",
@@ -175,7 +176,7 @@ const PROMO_VISUALS = {
 
 const DEFAULT_PROMO_VISUAL = {
   categoryKey: "food",
-  emoji: "🏷️",
+  emoji: "ðŸ·ï¸",
   background: "linear-gradient(135deg, #312e81 0%, #7161ef 48%, #c4b5fd 100%)",
   accent: "#7161ef",
 } as const;
@@ -244,7 +245,7 @@ function getCategoryLabel(
   }
 }
 
-/* ── Phone mockup screens ──────────────────────────────────────────── */
+/* â”€â”€ Phone mockup screens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function B2CScreen() {
   const { dict, locale } = useTranslation();
   const labels = dict.benefits.consumerSimulator;
@@ -720,7 +721,7 @@ function ConsumerDetailScreen({
         <p className="text-[15px] font-bold leading-tight text-[#8271ef]">{promotion.businessName || labels.businessUnavailable}</p>
         <h3 className="mx-auto mt-[6px] max-w-[190px] text-[15px] font-extrabold leading-[1.18] text-[#202024]">{promotion.title}</h3>
         <p className="mx-auto mt-[10px] max-w-[214px] text-[8px] leading-[1.5] text-[#8b8b91]">
-          {getCategoryLabel(promotion.categoryKey, labels)} · {promotion.description}
+          {getCategoryLabel(promotion.categoryKey, labels)} Â· {promotion.description}
         </p>
 
         <div className="my-[12px] h-px bg-[#e5defc]" />
@@ -771,71 +772,8 @@ function ConsumerDetailScreen({
   );
 }
 
-function B2BScreen() {
-  const { dict } = useTranslation();
-  const d = dict.benefits.dashboard;
-  const stats = [
-    { label: d.views, value: "1,284", delta: "+12%" },
-    { label: d.redemptions, value: "347", delta: "+8%" },
-    { label: "Rating", value: "4.8★", delta: "+0.2" },
-  ];
-  return (
-    <div className="flex flex-col gap-2 px-1">
-      {/* Stat row */}
-      <div className="grid grid-cols-3 gap-1.5 mb-1">
-        {stats.map((s) => (
-          <div
-            key={s.label}
-            className="rounded-lg p-1.5 text-center"
-            style={{ background: "rgba(113,97,239,0.07)" }}
-          >
-            <p className="text-[11px] font-bold text-[#7161ef]">{s.value}</p>
-            <p className="text-[7px] text-[#9ca3af] mt-0.5">{s.label}</p>
-            <p className="text-[7px] text-emerald-500">{s.delta}</p>
-          </div>
-        ))}
-      </div>
-      {/* Mini bar chart */}
-      <div className="rounded-lg p-2" style={{ background: "rgba(113,97,239,0.04)", border: "1px solid rgba(113,97,239,0.12)" }}>
-        <p className="text-[8px] text-[#6b7280] mb-1.5">{d.redemptionsPerDay}</p>
-        <div className="flex items-end gap-1 h-10">
-          {[3, 5, 4, 7, 6, 9, 8].map((v, i) => (
-            <div
-              key={i}
-              className="flex-1 rounded-t"
-              style={{
-                height: `${(v / 9) * 100}%`,
-                background: i === 5 ? "#7161ef" : "rgba(113,97,239,0.3)",
-              }}
-            />
-          ))}
-        </div>
-        <div className="flex justify-between mt-1">
-          {["L", "M", "X", "J", "V", "S", "D"].map((d) => (
-            <span key={d} className="text-[6px] text-[#d1d5db] flex-1 text-center">{d}</span>
-          ))}
-        </div>
-      </div>
-      {/* Campaign toggle */}
-      <div
-        className="flex items-center justify-between rounded-lg p-2"
-        style={{ border: "1px solid rgba(113,97,239,0.15)", background: "#faf9ff" }}
-      >
-        <div>
-          <p className="text-[9px] font-semibold text-[#1a1a1a]">{d.promoLabel}</p>
-          <p className="text-[7px] text-[#9ca3af]">{d.promoStatus}</p>
-        </div>
-        <div className="w-8 h-4 rounded-full flex items-center px-0.5" style={{ background: "#7161ef" }}>
-          <div className="w-3 h-3 rounded-full bg-white ml-auto" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Phone mockup shell ───────────────────────────────────────────── */
+/* â”€â”€ Phone mockup shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function PhoneMockup({ activeTab }: { activeTab: Tab }) {
-  const { dict } = useTranslation();
   const [visibleTab, setVisibleTab] = useState<Tab>(activeTab);
   const [opacity, setOpacity] = useState(1);
 
@@ -866,7 +804,7 @@ function PhoneMockup({ activeTab }: { activeTab: Tab }) {
       className="relative flex-shrink-0"
       style={{ width: W, height: H }}
     >
-      {/* ── Left side buttons (volume + silent switch) ── */}
+      {/* â”€â”€ Left side buttons (volume + silent switch) â”€â”€ */}
       {/* Silent / Action button */}
       <div
         className="absolute"
@@ -906,7 +844,7 @@ function PhoneMockup({ activeTab }: { activeTab: Tab }) {
           boxShadow: "inset 1px 0 1px rgba(255,255,255,0.2)",
         }}
       />
-      {/* ── Right side power button ── */}
+      {/* â”€â”€ Right side power button â”€â”€ */}
       <div
         className="absolute"
         style={{
@@ -920,7 +858,7 @@ function PhoneMockup({ activeTab }: { activeTab: Tab }) {
         }}
       />
 
-      {/* ── Outer frame (titanium aesthetic) ── */}
+      {/* â”€â”€ Outer frame (titanium aesthetic) â”€â”€ */}
       <div
         className="absolute inset-0"
         style={{
@@ -934,7 +872,7 @@ function PhoneMockup({ activeTab }: { activeTab: Tab }) {
         }}
       />
 
-      {/* ── Screen bezel inset ── */}
+      {/* â”€â”€ Screen bezel inset â”€â”€ */}
       <div
         className="absolute"
         style={{
@@ -948,7 +886,7 @@ function PhoneMockup({ activeTab }: { activeTab: Tab }) {
           boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.8)",
         }}
       >
-        {/* ── Screen background ── */}
+        {/* â”€â”€ Screen background â”€â”€ */}
         <div
           style={{
             position: "absolute",
@@ -969,140 +907,20 @@ function PhoneMockup({ activeTab }: { activeTab: Tab }) {
               <B2CScreen />
             </div>
           ) : (
-            <>
-              {/* ── Status bar ── */}
-              <div
-                style={{
-                  height: 44,
-                  paddingTop: 16,
-                  paddingLeft: 20,
-                  paddingRight: 18,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  background: "linear-gradient(135deg, #7161ef 0%, #9b8ff7 100%)",
-                }}
-              >
-                {/* Time */}
-                <span style={{ fontSize: 9.5, fontWeight: 600, color: "white", letterSpacing: 0.2 }}>
-                  9:41
-                </span>
-                {/* Status icons */}
-                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  {/* Signal bars */}
-                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                    <rect x="0" y="6" width="2.5" height="4" rx="1" fill="white" />
-                    <rect x="3.8" y="4.5" width="2.5" height="5.5" rx="1" fill="white" />
-                    <rect x="7.6" y="2.5" width="2.5" height="7.5" rx="1" fill="white" />
-                    <rect x="11.4" y="0" width="2.5" height="10" rx="1" fill="white" />
-                  </svg>
-                  {/* WiFi */}
-                  <svg width="13" height="9" viewBox="0 0 13 9" fill="none">
-                    <path d="M6.5 8a1 1 0 100-2 1 1 0 000 2z" fill="white" />
-                    <path d="M3 5.5C4.5 4.3 5.5 4 6.5 4S8.5 4.3 10 5.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                    <path d="M0.5 3C2.5 1.2 4.5 0.5 6.5 0.5S10.5 1.2 12.5 3" stroke="white" strokeWidth="1.2" strokeLinecap="round" fill="none" strokeOpacity="0.7" />
-                  </svg>
-                  {/* Battery */}
-                  <svg width="20" height="10" viewBox="0 0 20 10" fill="none">
-                    <rect x="0.5" y="0.5" width="16" height="9" rx="2.5" stroke="white" strokeOpacity="0.5" />
-                    <rect x="2" y="2" width="11" height="6" rx="1.5" fill="white" />
-                    <path d="M17.5 3.5v3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.5" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* ── App header bar ── */}
-              <div
-                style={{
-                  padding: "8px 16px 8px",
-                  background: "linear-gradient(135deg, #7161ef 0%, #9b8ff7 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-              >
-                <Image
-                  src="/klippr/klippr.png"
-                  alt="Klippr"
-                  width={24}
-                  height={24}
-                  className="rounded-md object-cover shrink-0"
-                  sizes="24px"
-                />
-                <span style={{ fontSize: 11, fontWeight: 700, color: "white", letterSpacing: 0.5 }}>KLIPPR</span>
-                <div style={{ marginLeft: "auto", width: 22, height: 22, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "white" }} />
-                </div>
-              </div>
-
-              {/* ── Section label ── */}
-              <div style={{ padding: "10px 14px 4px" }}>
-                <span
-                  style={{
-                    fontSize: 8,
-                    fontWeight: 700,
-                    color: "#7161ef",
-                    textTransform: "uppercase",
-                    letterSpacing: 1.5,
-                    opacity: 0.9,
-                  }}
-                >
-                  {dict.benefits.screenLabelBusiness}
-                </span>
-              </div>
-
-              {/* ── Cross-dissolve screen content ── */}
-              <div
-                style={{
-                  padding: "0 12px 12px",
-                  opacity,
-                  transition: "opacity 150ms ease",
-                }}
-              >
-                <B2BScreen />
-              </div>
-            </>
-          )}
-        </div>
-
-        {visibleTab === "b2b" && (
-          <>
-            {/* ── Dynamic Island ── */}
             <div
+              className="h-full"
               style={{
-                position: "absolute",
-                top: 11,
-                left: "50%",
-                transform: "translateX(-50%)",
-                width: 72,
-                height: 22,
-                borderRadius: 20,
-                background: "#000",
-                zIndex: 10,
-                boxShadow: "inset 0 0 1px 1px rgba(255,255,255,0.05)",
+                opacity,
+                transition: "opacity 150ms ease",
               }}
             >
-              {/* Camera lens reflection */}
-              <div style={{ position: "absolute", right: 6, top: 4, width: 14, height: 14, borderRadius: "50%", background: "#111", boxShadow: "inset -1px -1px 2px rgba(255,255,255,0.1)" }} />
+              <BusinessSimulator />
             </div>
-
-            {/* ── Screen glare overlay ── */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: INNER_R - 1,
-                background:
-                  "linear-gradient(115deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.02) 40%, transparent 45%)",
-                pointerEvents: "none",
-                zIndex: 20,
-              }}
-            />
-          </>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* ── Ambient glow ── */}
+      {/* â”€â”€ Ambient glow â”€â”€ */}
       <div
         className="absolute pointer-events-none"
         style={{
@@ -1122,7 +940,7 @@ function PhoneMockup({ activeTab }: { activeTab: Tab }) {
 }
 
 
-/* ── Benefit card ──────────────────────────────────────────────────── */
+/* â”€â”€ Benefit card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function BenefitCard({ icon: Icon, title, body }: { icon: IconComponent; title: string; body: string }) {
   return (
     <div
@@ -1162,7 +980,7 @@ function BenefitCard({ icon: Icon, title, body }: { icon: IconComponent; title: 
   );
 }
 
-/* ── Tab pill ──────────────────────────────────────────────────────── */
+/* â”€â”€ Tab pill â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function TabPills({
   activeTab,
   onTabChange,
@@ -1259,7 +1077,7 @@ function TabPills({
   );
 }
 
-/* ── Main section ──────────────────────────────────────────────────── */
+/* â”€â”€ Main section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export function BenefitsSection() {
   const { dict } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>("b2c");
@@ -1305,7 +1123,7 @@ export function BenefitsSection() {
 
         {/* Desktop: split layout | Mobile: stacked */}
         <div className="flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-16">
-          {/* LEFT — 2×2 grid of cards (cross-dissolve on tab change) */}
+          {/* LEFT â€” 2Ã—2 grid of cards (cross-dissolve on tab change) */}
           <div className="flex-1">
             <div
               className="grid grid-cols-1 sm:grid-cols-2 gap-4"
@@ -1325,7 +1143,7 @@ export function BenefitsSection() {
             </div>
           </div>
 
-          {/* RIGHT — static phone mockup, only inner screen changes */}
+          {/* RIGHT â€” static phone mockup, only inner screen changes */}
           <div className="hidden lg:flex flex-col items-center justify-center flex-shrink-0 pl-6">
             <PhoneMockup activeTab={activeTab} />
           </div>
