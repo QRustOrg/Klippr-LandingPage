@@ -69,7 +69,7 @@ interface ConsumerPromotion {
 }
 
 const ACTIVE_PROMOTIONS_ENDPOINT =
-  "/api/klippr/promotions/active";
+  "/api/promotions/active";
 
 const FALLBACK_PROMOTIONS: PromotionResource[] = [
   {
@@ -132,42 +132,48 @@ const FALLBACK_PROMOTIONS: PromotionResource[] = [
 const PROMO_VISUALS = {
   comida_hamburguesas: {
     categoryKey: "food",
-    emoji: "ðŸ”",
+    imageSrc: "/images/promotions/comida_hamburguesas.png",
+    emoji: "\u{1F354}",
     background:
       "radial-gradient(circle at 24% 42%, rgba(255,184,77,0.96) 0 10%, transparent 22%), radial-gradient(circle at 68% 36%, rgba(255,231,173,0.8) 0 7%, transparent 20%), linear-gradient(135deg, #211714 0%, #6f3716 42%, #f59e0b 100%)",
     accent: "#f59e0b",
   },
   comida_pollo_frito: {
     categoryKey: "food",
-    emoji: "ðŸ—",
+    imageSrc: "/images/promotions/comida_pollo_frito.png",
+    emoji: "\u{1F357}",
     background:
       "radial-gradient(circle at 68% 26%, rgba(255,237,213,0.82) 0 8%, transparent 20%), linear-gradient(135deg, #3f1d0b 0%, #b45309 52%, #fb923c 100%)",
     accent: "#ea580c",
   },
   comida_ceviche: {
     categoryKey: "food",
-    emoji: "ðŸŸ",
+    imageSrc: "/images/promotions/comida_ceviche.png",
+    emoji: "\u{1F41F}",
     background:
       "radial-gradient(circle at 72% 34%, rgba(255,255,255,0.9) 0 8%, transparent 20%), linear-gradient(135deg, #e0f2fe 0%, #38bdf8 45%, #0f766e 100%)",
     accent: "#0ea5e9",
   },
   deportes_futbol: {
     categoryKey: "sports",
-    emoji: "âš½",
+    imageSrc: "/images/promotions/deportes_futbol.png",
+    emoji: "\u26BD",
     background:
       "radial-gradient(circle at 30% 70%, rgba(255,255,255,0.86) 0 8%, transparent 19%), linear-gradient(135deg, #020617 0%, #1d4ed8 48%, #22c55e 100%)",
     accent: "#2563eb",
   },
   salud_pastillas: {
     categoryKey: "health",
-    emoji: "ðŸ’Š",
+    imageSrc: "/images/promotions/salud_pastillas.png",
+    emoji: "\u{1F48A}",
     background:
       "radial-gradient(circle at 64% 36%, rgba(255,255,255,0.92) 0 7%, transparent 19%), linear-gradient(135deg, #dbeafe 0%, #93c5fd 46%, #f87171 100%)",
     accent: "#60a5fa",
   },
   entretenimiento_cine: {
     categoryKey: "entertainment",
-    emoji: "ðŸŽ¬",
+    imageSrc: "/images/promotions/entretenimiento_cine.png",
+    emoji: "\u{1F3AC}",
     background:
       "radial-gradient(circle at 72% 22%, rgba(255,255,255,0.78) 0 6%, transparent 18%), linear-gradient(135deg, #292524 0%, #7c2d12 44%, #a78bfa 100%)",
     accent: "#a78bfa",
@@ -176,7 +182,8 @@ const PROMO_VISUALS = {
 
 const DEFAULT_PROMO_VISUAL = {
   categoryKey: "food",
-  emoji: "ðŸ·ï¸",
+  imageSrc: null,
+  emoji: "\u{1F3F7}\uFE0F",
   background: "linear-gradient(135deg, #312e81 0%, #7161ef 48%, #c4b5fd 100%)",
   accent: "#7161ef",
 } as const;
@@ -267,8 +274,13 @@ function B2CScreen() {
 
         if (!response.ok) throw new Error(`Promotion request failed: ${response.status}`);
 
-        const data = (await response.json()) as PromotionResource[];
-        const normalized = normalizePromotions(Array.isArray(data) ? data : []);
+        const data = await response.json();
+        const rawPromotions = Array.isArray(data)
+          ? data
+          : Array.isArray((data as { value?: unknown }).value)
+            ? (data as { value: PromotionResource[] }).value
+            : [];
+        const normalized = normalizePromotions(rawPromotions);
 
         if (normalized.length > 0) {
           setPromotions(normalized);
@@ -434,17 +446,29 @@ function PromoArtwork({
       className={cn("relative overflow-hidden bg-[#1f1f24]", className)}
       style={{ background: visual.background }}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.22),transparent_28%),linear-gradient(to_bottom,rgba(0,0,0,0),rgba(0,0,0,0.28))]" />
-      <span
-        className={cn(
-          "absolute select-none drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]",
-          compact ? "bottom-2 right-2 text-[30px]" : "bottom-4 right-5 text-[62px]"
-        )}
-        aria-hidden="true"
-      >
-        {visual.emoji}
-      </span>
-      <div className={cn("absolute rounded-full bg-white/12 blur-md", compact ? "left-5 top-4 h-8 w-16" : "left-8 top-8 h-14 w-32")} />
+      {visual.imageSrc ? (
+        <Image
+          src={visual.imageSrc}
+          alt={promo.title}
+          fill
+          className="object-cover"
+          sizes={compact ? "86px" : "260px"}
+        />
+      ) : (
+        <>
+          <span
+            className={cn(
+              "absolute select-none drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]",
+              compact ? "bottom-2 right-2 text-[30px]" : "bottom-4 right-5 text-[62px]"
+            )}
+            aria-hidden="true"
+          >
+            {visual.emoji}
+          </span>
+          <div className={cn("absolute rounded-full bg-white/12 blur-md", compact ? "left-5 top-4 h-8 w-16" : "left-8 top-8 h-14 w-32")} />
+        </>
+      )}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.18),transparent_28%),linear-gradient(to_bottom,rgba(0,0,0,0),rgba(0,0,0,0.24))]" />
     </div>
   );
 }
@@ -499,7 +523,7 @@ function ConsumerHomeScreen({
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-[14px] pb-[12px] pt-[10px]">
+      <div className="iphone-scroll min-h-0 flex-1 overflow-y-auto px-[14px] pb-[12px] pt-[10px]">
         <div className="rounded-[18px] bg-[#f8eef9] px-[14px] py-[15px] text-center">
           <p className="text-[14px] font-bold text-[#8271ef]">{labels.couponsTitle}</p>
           <div className="mt-[9px] flex items-center justify-center gap-[13px] text-[#c9bae8]">
@@ -541,8 +565,12 @@ function ConsumerHomeScreen({
                 }}
                 className="min-w-0 text-center"
               >
-                <span className="mx-auto flex h-[36px] w-[36px] items-center justify-center rounded-full text-[18px]" style={{ background: `${visual.accent}33` }}>
-                  {visual.emoji}
+                <span className="relative mx-auto flex h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full text-[18px]" style={{ background: `${visual.accent}33` }}>
+                  {visual.imageSrc ? (
+                    <Image src={visual.imageSrc} alt="" fill className="object-cover" sizes="36px" />
+                  ) : (
+                    visual.emoji
+                  )}
                 </span>
                 <span className="mt-[7px] block truncate text-[9px] font-bold text-[#8271ef]">{category.label}</span>
               </button>
@@ -622,7 +650,7 @@ function ConsumerPromosScreen({
         </button>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-[9px] pb-[8px]">
+      <div className="iphone-scroll min-h-0 flex-1 overflow-y-auto px-[9px] pb-[8px]">
         {isLoading ? (
           <p className="py-8 text-center text-[9px] font-semibold text-[#8271ef]">{labels.loading}</p>
         ) : groups.length === 0 ? (
@@ -717,11 +745,11 @@ function ConsumerDetailScreen({
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-[14px] py-[15px] text-center">
+      <div className="iphone-scroll min-h-0 flex-1 overflow-y-auto px-[14px] py-[15px] text-center">
         <p className="text-[15px] font-bold leading-tight text-[#8271ef]">{promotion.businessName || labels.businessUnavailable}</p>
         <h3 className="mx-auto mt-[6px] max-w-[190px] text-[15px] font-extrabold leading-[1.18] text-[#202024]">{promotion.title}</h3>
         <p className="mx-auto mt-[10px] max-w-[214px] text-[8px] leading-[1.5] text-[#8b8b91]">
-          {getCategoryLabel(promotion.categoryKey, labels)} Â· {promotion.description}
+          {getCategoryLabel(promotion.categoryKey, labels)} {"\u00B7"} {promotion.description}
         </p>
 
         <div className="my-[12px] h-px bg-[#e5defc]" />

@@ -211,10 +211,19 @@ const FALLBACK_DASHBOARD: BusinessDashboardResource = {
 };
 
 const PROMO_IMAGE_BY_KEY: Record<string, string> = {
-  comida_pizza: "/klippr/business-simulator/pizza.png",
-  comida_hamburguesas: "/klippr/business-simulator/pizza.png",
-  comida_ceviche: "/klippr/business-simulator/ceviche.png",
-  entretenimiento_cibercafe: "/klippr/business-simulator/cibercafe.png",
+  comida_ceviche: "/images/promotions/comida_ceviche.png",
+  comida_hamburguesas: "/images/promotions/comida_hamburguesas.png",
+  comida_pizza: "/images/promotions/comida_pizza.png",
+  comida_pollo_frito: "/images/promotions/comida_pollo_frito.png",
+  deportes_basket: "/images/promotions/deportes_basket.png",
+  deportes_futbol: "/images/promotions/deportes_futbol.png",
+  deportes_volley: "/images/promotions/deportes_volley.png",
+  entretenimiento_bares: "/images/promotions/entretenimiento_bares.png",
+  entretenimiento_bolos: "/images/promotions/entretenimiento_bolos.png",
+  entretenimiento_cibercafe: "/images/promotions/entretenimiento_cibercafe.png",
+  entretenimiento_cine: "/images/promotions/entretenimiento_cine.png",
+  salud_medicamentos: "/images/promotions/salud_medicamentos.png",
+  salud_pastillas: "/images/promotions/salud_pastillas.png",
 };
 
 const PROMO_GRADIENT_BY_KEY: Record<string, string> = {
@@ -529,12 +538,6 @@ function BusinessStatusBar() {
   return (
     <div className="relative flex h-[25px] items-center justify-between px-[13px] pt-[5px] text-[8px] font-semibold text-white">
       <span>12:34</span>
-      <span
-        className="absolute left-1/2 top-[6px] h-[17px] w-[17px] -translate-x-1/2 rounded-full bg-[#111] shadow-[inset_0_0_0_2px_rgba(255,255,255,0.12)]"
-        aria-hidden="true"
-      >
-        <span className="absolute left-[5px] top-[5px] h-[6px] w-[6px] rounded-full bg-[#172554]" />
-      </span>
       <span className="flex items-center gap-[4px]" aria-hidden="true">
         <span className="flex items-end gap-[1px]">
           {[4, 6, 8, 10].map((height) => (
@@ -594,7 +597,7 @@ function BusinessHomeScreen({
   promotionCounts: Record<string, { generated: number; redeemed: number }>;
 }) {
   return (
-    <main className="min-h-0 flex-1 overflow-y-auto px-[15px] pb-[12px] pt-[13px]">
+    <main className="iphone-scroll min-h-0 flex-1 overflow-y-auto px-[15px] pb-[12px] pt-[13px]">
       <div className="grid grid-cols-2 gap-[11px]">
         {stats.map((stat, index) => (
           <BusinessStatCard key={stat.label} stat={stat} index={index} />
@@ -666,7 +669,7 @@ function BusinessListScreen({
   promotionCounts: Record<string, { generated: number; redeemed: number }>;
 }) {
   return (
-    <main className="min-h-0 flex-1 overflow-y-auto px-[13px] pb-[12px] pt-[17px]">
+    <main className="iphone-scroll min-h-0 flex-1 overflow-y-auto px-[13px] pb-[12px] pt-[17px]">
       <h4 className="text-center text-[16px] font-bold text-[#8572ee]">{copy.activePromos}</h4>
       <div className="mt-[15px] space-y-[12px]">
         {promotions.slice(0, 4).map((promotion) => (
@@ -702,7 +705,7 @@ function BusinessQrScreen({
 }) {
   if (creationStep === "qr") {
     return (
-      <main className="min-h-0 flex-1 overflow-y-auto px-[13px] pb-[12px] pt-[10px]">
+      <main className="iphone-scroll min-h-0 flex-1 overflow-y-auto px-[13px] pb-[12px] pt-[10px]">
         <section>
           <div className="mb-[10px] flex items-center justify-between">
             <h4 className="flex items-center gap-[6px] text-[12px] font-bold text-[#8572ee]">
@@ -776,7 +779,7 @@ function BusinessQrScreen({
   }
 
   return (
-    <main className="min-h-0 flex-1 overflow-y-auto px-[13px] pb-[12px] pt-[10px]">
+    <main className="iphone-scroll min-h-0 flex-1 overflow-y-auto px-[13px] pb-[12px] pt-[10px]">
       <input
         value={draft.title}
         onChange={(event) => onDraftChange({ ...draft, title: event.target.value.toUpperCase() })}

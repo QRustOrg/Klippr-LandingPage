@@ -91,7 +91,7 @@ export function HeroSection() {
           {/* ══════════════════ RIGHT COLUMN ══════════════════ */}
           <div className="relative flex justify-center mt-10 lg:mt-0 lg:w-[45%]">
             <Image
-              src="/klippr/klippr-hero.png"
+              src="/images/klippr_mascot.png"
               alt={dict.hero.imageAlt}
               width={400}
               height={520}

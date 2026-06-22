@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
+        source: "/api/promotions/active",
+        destination: "https://klippr-backend-production.up.railway.app/api/promotions/active",
+      },
+      {
         source: "/api/klippr/promotions/active",
         destination: "https://klippr-backend-production.up.railway.app/api/promotions/active",
       },
