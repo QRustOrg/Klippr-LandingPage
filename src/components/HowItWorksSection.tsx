@@ -443,7 +443,7 @@ function CanjearPanel({ featuredPromotion }: PanelProps) {
           </p>
           <div className="flex items-center gap-2 bg-[#f0fdf4] text-[#16a34a] text-[12px] font-medium px-3 py-1.5 rounded-full">
             <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />
-            {p.redeemed.replace("The Daily Grind", featuredPromotion.businessName)}
+            Redeemed at {featuredPromotion.businessName}
           </div>
         </div>
       </div>
@@ -474,6 +474,9 @@ function CompartirPanel({ featuredPromotion }: PanelProps) {
               <Image src={featuredPromotion.imageSrc} alt="" fill className="object-cover" sizes="48px" />
             </div>
             <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#7161ef]">
+                Your voice matters
+              </p>
               <p className="text-[14px] font-medium text-[#1a1a1a]">
                 How was your experience with {featuredPromotion.businessName}?
               </p>
