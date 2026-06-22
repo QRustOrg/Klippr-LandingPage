@@ -5,6 +5,7 @@
     "benefits": "Beneficios",
     "testimonials": "Testimonios",
     "comparison": "Comparación",
+    "videos": "Videos",
     "howItWorks": "¿Cómo funciona?"
   },
   "hero": {
@@ -251,6 +252,38 @@
       "redemptionsPerDay": "Canjes por día",
       "promoLabel": "Promo 30% OFF",
       "promoStatus": "Activa · 87 canjes restantes"
+    },
+    "consumerSimulator": {
+      "greeting": "Hola, paulo!",
+      "couponsTitle": "¡Tus Cupones!",
+      "couponsCount": "Tienes 1 cupón",
+      "favoritesHint": "Toca 'Favoritos' para verlos",
+      "activePromotions": "Promociones Activas",
+      "usedCoupons": "Cupones Usados",
+      "popularStores": "Tiendas Populares Cerca",
+      "food": "Comida",
+      "sports": "Deportes",
+      "health": "Salud",
+      "entertainment": "Entretenimiento",
+      "promosTitle": "Promos",
+      "searchPlaceholder": "Buscar",
+      "more": "Ver más",
+      "businessUnavailable": "Negocio no disponible",
+      "details": "Más info.",
+      "availableCount": "{count} disponibles",
+      "expirationLabel": "Vigencia",
+      "businessLabel": "Negocio",
+      "quantityLabel": "Cantidad",
+      "generateQr": "Generar QR",
+      "discountLabel": "Descuento",
+      "loading": "Cargando promociones...",
+      "empty": "Sin promociones activas por ahora.",
+      "sourceLive": "Datos en vivo",
+      "sourceFallback": "Demo local",
+      "navHome": "Inicio",
+      "navFavorites": "Favoritos",
+      "navPromos": "Promos",
+      "navCommunity": "Comunidad"
     }
   },
   "socialProof": {

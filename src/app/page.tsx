@@ -20,12 +20,12 @@ export default function Home() {
     <>
       <Navbar />
       <HeroSection />
-      <VideoSection />
       <PainPointsSection />
       <HowItWorksSection />
       <BenefitsSection />
       <SocialProofSection />
       <ComparisonSection />
+      <VideoSection />
       <Footer />
     </>
   );

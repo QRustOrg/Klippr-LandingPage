@@ -2,7 +2,21 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { ChevronLeft } from "lucide-react";
+import {
+  Bell,
+  ChevronLeft,
+  ChevronRight,
+  Grid3X3,
+  Heart,
+  Home as HomeIcon,
+  Info,
+  Search,
+  Settings,
+  Share2,
+  SlidersHorizontal,
+  Store,
+  Users,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   MapPinsIcon,
@@ -15,7 +29,6 @@ import {
   StarReplyIcon,
 } from "./icons";
 import { useTranslation } from "@/i18n/useTranslation";
-import { filterExplorarVenues, type ExplorarActiveFilter } from "@/lib/explorar-demo";
 
 /* ── Types ────────────────────────────────────────────────────────── */
 type Tab = "b2c" | "b2b";
@@ -25,217 +38,735 @@ type IconComponent = React.ComponentType<{ className?: string }>;
 const B2C_ICONS: IconComponent[] = [MapPinsIcon, QRLockIcon, StarBubblesIcon, ListChecksIcon];
 const B2B_ICONS: IconComponent[] = [BarChartNumbersIcon, ShieldCheckmarkIcon, TogglePanelIcon, StarReplyIcon];
 
+type ConsumerSimulatorScreen = "home" | "promos" | "detail";
+
+interface PromotionResource {
+  id: string;
+  businessId?: string;
+  businessName?: string | null;
+  title?: string | null;
+  description?: string | null;
+  discountAmount?: number | null;
+  discountType?: string | null;
+  endDate?: string | null;
+  redemptionCap?: number | null;
+  imageKey?: string | null;
+}
+
+interface ConsumerPromotion {
+  id: string;
+  businessName: string;
+  title: string;
+  description: string;
+  discountAmount: number;
+  discountType: string;
+  discountLabel: string;
+  endDate: string | null;
+  redemptionCap: number;
+  imageKey: string;
+  categoryKey: "food" | "sports" | "health" | "entertainment";
+}
+
+const ACTIVE_PROMOTIONS_ENDPOINT =
+  "/api/klippr/promotions/active";
+
+const FALLBACK_PROMOTIONS: PromotionResource[] = [
+  {
+    id: "fallback-burger",
+    businessName: "pizza hot",
+    title: "HAMBURGUESAS PROMO 2X1",
+    description: "LLEVATE DOS HAMBURGUESAS AL PRECIO DE 1",
+    discountAmount: 50,
+    discountType: "Percentage",
+    endDate: "2026-06-30T00:00:00",
+    redemptionCap: 100,
+    imageKey: "comida_hamburguesas",
+  },
+  {
+    id: "fallback-chicken",
+    businessName: "Hamburgueseria Pepe",
+    title: "Pollo Frito + Papas",
+    description: "OFERTA EXCLUSIVA ONLINE",
+    discountAmount: 60,
+    discountType: "Percentage",
+    endDate: "2026-06-26T00:00:00",
+    redemptionCap: 100,
+    imageKey: "comida_pollo_frito",
+  },
+  {
+    id: "fallback-football",
+    businessName: "Hamburgueseria Pepe",
+    title: "Pass Futbol Semanal",
+    description: "Acceso a varios partidos con descuento.",
+    discountAmount: 50,
+    discountType: "Percentage",
+    endDate: "2026-06-30T00:00:00",
+    redemptionCap: 100,
+    imageKey: "deportes_futbol",
+  },
+  {
+    id: "fallback-health",
+    businessName: "Hamburgueseria Pepe",
+    title: "25% OFF en pastillas para alergias",
+    description: "Descuento especial en productos seleccionados.",
+    discountAmount: 25,
+    discountType: "Percentage",
+    endDate: "2026-06-25T00:00:00",
+    redemptionCap: 100,
+    imageKey: "salud_pastillas",
+  },
+  {
+    id: "fallback-cinema",
+    businessName: "Hamburgueseria Pepe",
+    title: "ENTRADAS 2X1 MARTES",
+    description: "SOLO LOS MARTES DE 18:00 A 23:00",
+    discountAmount: 50,
+    discountType: "Percentage",
+    endDate: "2026-06-29T00:00:00",
+    redemptionCap: 100,
+    imageKey: "entretenimiento_cine",
+  },
+];
+
+const PROMO_VISUALS = {
+  comida_hamburguesas: {
+    categoryKey: "food",
+    emoji: "🍔",
+    background:
+      "radial-gradient(circle at 24% 42%, rgba(255,184,77,0.96) 0 10%, transparent 22%), radial-gradient(circle at 68% 36%, rgba(255,231,173,0.8) 0 7%, transparent 20%), linear-gradient(135deg, #211714 0%, #6f3716 42%, #f59e0b 100%)",
+    accent: "#f59e0b",
+  },
+  comida_pollo_frito: {
+    categoryKey: "food",
+    emoji: "🍗",
+    background:
+      "radial-gradient(circle at 68% 26%, rgba(255,237,213,0.82) 0 8%, transparent 20%), linear-gradient(135deg, #3f1d0b 0%, #b45309 52%, #fb923c 100%)",
+    accent: "#ea580c",
+  },
+  comida_ceviche: {
+    categoryKey: "food",
+    emoji: "🐟",
+    background:
+      "radial-gradient(circle at 72% 34%, rgba(255,255,255,0.9) 0 8%, transparent 20%), linear-gradient(135deg, #e0f2fe 0%, #38bdf8 45%, #0f766e 100%)",
+    accent: "#0ea5e9",
+  },
+  deportes_futbol: {
+    categoryKey: "sports",
+    emoji: "⚽",
+    background:
+      "radial-gradient(circle at 30% 70%, rgba(255,255,255,0.86) 0 8%, transparent 19%), linear-gradient(135deg, #020617 0%, #1d4ed8 48%, #22c55e 100%)",
+    accent: "#2563eb",
+  },
+  salud_pastillas: {
+    categoryKey: "health",
+    emoji: "💊",
+    background:
+      "radial-gradient(circle at 64% 36%, rgba(255,255,255,0.92) 0 7%, transparent 19%), linear-gradient(135deg, #dbeafe 0%, #93c5fd 46%, #f87171 100%)",
+    accent: "#60a5fa",
+  },
+  entretenimiento_cine: {
+    categoryKey: "entertainment",
+    emoji: "🎬",
+    background:
+      "radial-gradient(circle at 72% 22%, rgba(255,255,255,0.78) 0 6%, transparent 18%), linear-gradient(135deg, #292524 0%, #7c2d12 44%, #a78bfa 100%)",
+    accent: "#a78bfa",
+  },
+} as const;
+
+const DEFAULT_PROMO_VISUAL = {
+  categoryKey: "food",
+  emoji: "🏷️",
+  background: "linear-gradient(135deg, #312e81 0%, #7161ef 48%, #c4b5fd 100%)",
+  accent: "#7161ef",
+} as const;
+
+function getPromoVisual(imageKey: string | null | undefined) {
+  return imageKey && imageKey in PROMO_VISUALS
+    ? PROMO_VISUALS[imageKey as keyof typeof PROMO_VISUALS]
+    : DEFAULT_PROMO_VISUAL;
+}
+
+function buildDiscountLabel(amount: number, type: string) {
+  if (/percent/i.test(type)) return `${Math.round(amount)}% OFF`;
+  return `${Math.round(amount)} OFF`;
+}
+
+function normalizePromotions(rawPromotions: PromotionResource[]): ConsumerPromotion[] {
+  return rawPromotions
+    .filter((promo) => promo.id)
+    .map((promo) => {
+      const imageKey = promo.imageKey ?? "comida_hamburguesas";
+      const visual = getPromoVisual(imageKey);
+      const discountAmount = Number(promo.discountAmount ?? 0);
+      const discountType = promo.discountType ?? "Percentage";
+
+      return {
+        id: promo.id,
+        businessName: promo.businessName?.trim() || "Negocio no disponible",
+        title: promo.title?.trim() || "Promocion disponible",
+        description: promo.description?.trim() || "Promocion activa por tiempo limitado.",
+        discountAmount,
+        discountType,
+        discountLabel: buildDiscountLabel(discountAmount, discountType),
+        endDate: promo.endDate ?? null,
+        redemptionCap: promo.redemptionCap ?? 100,
+        imageKey,
+        categoryKey: visual.categoryKey,
+      };
+    });
+}
+
+function formatPromoDate(value: string | null, locale: string) {
+  if (!value) return "N/D";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "N/D";
+
+  return new Intl.DateTimeFormat(locale === "es" ? "es-PE" : "en-US", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function getCategoryLabel(
+  categoryKey: ConsumerPromotion["categoryKey"],
+  labels: ReturnType<typeof useTranslation>["dict"]["benefits"]["consumerSimulator"]
+) {
+  switch (categoryKey) {
+    case "sports":
+      return labels.sports;
+    case "health":
+      return labels.health;
+    case "entertainment":
+      return labels.entertainment;
+    default:
+      return labels.food;
+  }
+}
+
 /* ── Phone mockup screens ──────────────────────────────────────────── */
 function B2CScreen() {
-  const { dict } = useTranslation();
-  const p = dict.howItWorks.panels.explorar;
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [selectedPromoIndex, setSelectedPromoIndex] = useState<number | null>(null);
-  const [activeFilter, setActiveFilter] = useState<ExplorarActiveFilter>({ type: "all" });
+  const { dict, locale } = useTranslation();
+  const labels = dict.benefits.consumerSimulator;
+  const fallbackPromotions = useMemo(() => normalizePromotions(FALLBACK_PROMOTIONS), []);
+  const [promotions, setPromotions] = useState<ConsumerPromotion[]>(fallbackPromotions);
+  const [screen, setScreen] = useState<ConsumerSimulatorScreen>("home");
+  const [selectedPromotionId, setSelectedPromotionId] = useState<string | null>(null);
+  const [dataState, setDataState] = useState<"loading" | "live" | "fallback">("loading");
 
-  const filteredVenues = useMemo(
-    () => filterExplorarVenues(p.venues, activeFilter),
-    [p.venues, activeFilter]
-  );
+  useEffect(() => {
+    const controller = new AbortController();
 
-  const selected = p.venues.find((v) => v.id === selectedId) ?? null;
-  const selectedPromo =
-    selected && selectedPromoIndex !== null
-      ? (selected.discounts[selectedPromoIndex] ?? null)
-      : null;
+    async function loadPromotions() {
+      try {
+        const response = await fetch(ACTIVE_PROMOTIONS_ENDPOINT, {
+          headers: { Accept: "application/json" },
+          signal: controller.signal,
+        });
 
-  const venueAccent = (venueId: string) => {
-    const ix = p.venues.findIndex((v) => v.id === venueId);
-    return (ix >= 0 && ix % 2 === 1 ? "#a78bfa" : "#7161ef") as string;
+        if (!response.ok) throw new Error(`Promotion request failed: ${response.status}`);
+
+        const data = (await response.json()) as PromotionResource[];
+        const normalized = normalizePromotions(Array.isArray(data) ? data : []);
+
+        if (normalized.length > 0) {
+          setPromotions(normalized);
+          setDataState("live");
+        } else {
+          setPromotions(fallbackPromotions);
+          setDataState("fallback");
+        }
+      } catch {
+        if (controller.signal.aborted) return;
+        setPromotions(fallbackPromotions);
+        setDataState("fallback");
+      }
+    }
+
+    loadPromotions();
+
+    return () => controller.abort();
+  }, [fallbackPromotions]);
+
+  const groupedPromotions = useMemo(() => {
+    return promotions.reduce<Record<ConsumerPromotion["categoryKey"], ConsumerPromotion[]>>(
+      (acc, promo) => {
+        acc[promo.categoryKey].push(promo);
+        return acc;
+      },
+      { food: [], sports: [], health: [], entertainment: [] }
+    );
+  }, [promotions]);
+
+  const selectedPromotion =
+    promotions.find((promo) => promo.id === selectedPromotionId) ?? promotions[0] ?? fallbackPromotions[0];
+  const heroPromotion = groupedPromotions.food[0] ?? selectedPromotion;
+  const sourceLabel = dataState === "live" ? labels.sourceLive : labels.sourceFallback;
+
+  const openDetail = (promo: ConsumerPromotion) => {
+    setSelectedPromotionId(promo.id);
+    setScreen("detail");
   };
 
-  const chipBase =
-    "text-[9px] font-medium px-2 py-0.5 rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7161ef]/50";
-  const chipInactive = "border-[rgba(113,97,239,0.35)] text-[#7161ef] bg-[rgba(113,97,239,0.06)]";
-  const chipActive = "border-[#7161ef] bg-[#7161ef] text-white";
-
-  const scrollWrap = { maxHeight: 318, overflowY: "auto" as const, overflowX: "hidden" as const };
+  const categoryButtons = [
+    { key: "food" as const, label: labels.food, promo: groupedPromotions.food[0] ?? promotions[0] },
+    { key: "entertainment" as const, label: labels.entertainment, promo: groupedPromotions.entertainment[0] ?? promotions[0] },
+    { key: "health" as const, label: labels.health, promo: groupedPromotions.health[0] ?? promotions[0] },
+  ];
 
   return (
-    <div style={scrollWrap} className="px-0.5">
-      {selected && selectedPromo ? (
-        <div className="flex flex-col gap-2">
-          <button
-            type="button"
-            onClick={() => setSelectedPromoIndex(null)}
-            className="flex items-center gap-0.5 text-[9px] font-semibold text-[#7161ef] -ml-0.5 py-0.5 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7161ef]/40"
-          >
-            <ChevronLeft className="w-3 h-3 shrink-0" aria-hidden />
-            {p.backToPromotions}
-          </button>
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-[10px] font-semibold text-[#1a1a1a] leading-tight flex-1 min-w-0">{selectedPromo.title}</p>
-            <span
-              className="text-[8px] font-bold text-white rounded-full px-1.5 py-0.5 shrink-0"
-              style={{ background: venueAccent(selected.id) }}
-            >
-              {selectedPromo.badge}
-            </span>
-          </div>
-          <div>
-            <p className="text-[7px] font-bold uppercase tracking-wide text-[#6b7280] mb-0.5">{p.promoConditionsHeading}</p>
-            <p className="text-[8px] text-[#374151] leading-snug">{selectedPromo.conditions}</p>
-          </div>
-          <div>
-            <p className="text-[7px] font-bold uppercase tracking-wide text-[#6b7280] mb-0.5">{p.promoValidityHeading}</p>
-            <p className="text-[8px] text-[#374151] leading-snug">{selectedPromo.validity}</p>
-          </div>
-        </div>
-      ) : selected ? (
-        <div className="flex flex-col gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedId(null);
-              setSelectedPromoIndex(null);
-            }}
-            className="flex items-center gap-0.5 text-[9px] font-semibold text-[#7161ef] -ml-0.5 py-0.5 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7161ef]/40"
-          >
-            <ChevronLeft className="w-3 h-3 shrink-0" aria-hidden />
-            {p.backToList}
-          </button>
-          <p className="text-[7px] font-bold uppercase tracking-wide text-[#6b7280]">{p.discountsTitle}</p>
-          <div className="flex items-center gap-2 pb-2 border-b border-[#f3f4f6]">
-            <div
-              className="w-7 h-7 rounded-md shrink-0 flex items-center justify-center text-sm leading-none bg-[#f3f4f6]"
-              aria-hidden
-            >
-              {selected.emoji}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-semibold text-[#1a1a1a] leading-tight truncate">{selected.name}</p>
-              <p className="text-[8px] text-[#9ca3af]">{selected.categoryLine}</p>
-            </div>
-          </div>
-          <ul className="flex flex-col gap-1.5 list-none p-0 m-0">
-            {selected.discounts.map((d, i) => (
-              <li key={`${selected.id}-p-${i}`}>
-                <button
-                  type="button"
-                  onClick={() => setSelectedPromoIndex(i)}
-                  className={cn(
-                    "w-full flex items-start gap-2 p-2 rounded-lg border text-left transition-colors",
-                    "border-[#f0eeff] bg-[#faf9ff] hover:border-[#7161ef]/35",
-                    "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7161ef]/40"
-                  )}
-                  aria-label={`${p.choosePromoAria} ${d.title}`}
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-semibold text-[#1a1a1a] leading-tight">{d.title}</p>
-                    <p className="text-[8px] text-[#6b7280] mt-0.5 line-clamp-2">{d.conditions}</p>
-                  </div>
-                  <span
-                    className="text-[8px] font-bold text-white rounded-full px-1.5 py-0.5 shrink-0 self-center"
-                    style={{ background: venueAccent(selected.id) }}
-                  >
-                    {d.badge}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+    <div className="h-full bg-white text-[#1f1f24]">
+      {screen === "detail" ? (
+        <ConsumerDetailScreen
+          labels={labels}
+          locale={locale}
+          promotion={selectedPromotion}
+          onBack={() => setScreen("promos")}
+        />
+      ) : screen === "promos" ? (
+        <ConsumerPromosScreen
+          labels={labels}
+          groupedPromotions={groupedPromotions}
+          isLoading={dataState === "loading"}
+          onBack={() => setScreen("home")}
+          onOpenDetail={openDetail}
+          onNavigate={setScreen}
+        />
       ) : (
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-1.5 flex-wrap mb-0.5" role="toolbar" aria-label={p.filterToolbarAria}>
-            <button
-              type="button"
-              onClick={() => setActiveFilter({ type: "all" })}
-              className={cn(chipBase, activeFilter.type === "all" ? chipActive : chipInactive)}
-              aria-pressed={activeFilter.type === "all"}
-            >
-              {p.filterAllLabel}
-            </button>
-            {p.filterCategories.map((c) => {
-              const pressed = activeFilter.type === "category" && activeFilter.key === c.key;
-              return (
-                <button
-                  key={c.key}
-                  type="button"
-                  onClick={() => setActiveFilter({ type: "category", key: c.key })}
-                  className={cn(chipBase, pressed ? chipActive : chipInactive)}
-                  aria-pressed={pressed}
-                >
-                  {c.label}
-                </button>
-              );
-            })}
-            {p.filterLocations.map((loc) => {
-              const pressed = activeFilter.type === "location" && activeFilter.key === loc.key;
-              const ariaLabel = `${loc.label}, ${p.filterWithinKmAria.replace("{n}", String(loc.maxKm))}`;
-              return (
-                <button
-                  key={loc.key}
-                  type="button"
-                  onClick={() => setActiveFilter({ type: "location", key: loc.key, maxKm: loc.maxKm })}
-                  className={cn(chipBase, pressed ? chipActive : chipInactive)}
-                  aria-pressed={pressed}
-                  aria-label={ariaLabel}
-                >
-                  {loc.label}
-                </button>
-              );
-            })}
-          </div>
-          {filteredVenues.length === 0 ? (
-            <p className="text-[8px] text-[#6b7280] text-center py-4 px-1 leading-relaxed" role="status">
-              {p.noResults}
-            </p>
-          ) : (
-            <div className="flex flex-col gap-1.5">
-              {filteredVenues.map((v) => {
-                const color = venueAccent(v.id);
-                return (
-                  <button
-                    key={v.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedId(v.id);
-                      setSelectedPromoIndex(null);
-                    }}
-                    className={cn(
-                      "flex items-center gap-2 p-2 rounded-lg border text-left w-full transition-colors",
-                      "border-[#f0eeff] bg-[#faf9ff] hover:border-[#7161ef]/30",
-                      "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7161ef]/40"
-                    )}
-                    aria-label={`${p.chooseVenueAria} ${v.name}`}
-                  >
-                    <div
-                      className="w-7 h-7 rounded-md flex-shrink-0 flex items-center justify-center text-sm leading-none"
-                      style={{ background: `linear-gradient(135deg, ${color}22, ${color}44)` }}
-                      aria-hidden
-                    >
-                      {v.emoji}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-semibold text-[#1a1a1a] leading-tight truncate">{v.name}</p>
-                      <p className="text-[8px] text-[#9ca3af]">{v.categoryLine}</p>
-                      <div className="flex gap-0.5 mt-0.5">
-                        {Array.from({ length: v.stars }).map((_, i) => (
-                          <span key={i} className="text-[7px] text-yellow-400">
-                            ★
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <span
-                      className="text-[8px] font-bold text-white rounded-full px-1.5 py-0.5 flex-shrink-0"
-                      style={{ background: color }}
-                    >
-                      {v.listBadge}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
+        <ConsumerHomeScreen
+          labels={labels}
+          heroPromotion={heroPromotion}
+          categoryButtons={categoryButtons}
+          activeCount={promotions.length}
+          sourceLabel={sourceLabel}
+          isLoading={dataState === "loading"}
+          onOpenDetail={openDetail}
+          onNavigate={setScreen}
+        />
       )}
+    </div>
+  );
+}
+
+function ConsumerStatusBar({ dark = false }: { dark?: boolean }) {
+  const color = dark ? "#111827" : "#ffffff";
+
+  return (
+    <div className="flex h-[23px] items-center justify-between px-[12px] pt-[4px] text-[7px] font-semibold" style={{ color }}>
+      <span>4:37</span>
+      <div className="flex items-center gap-[3px]" aria-hidden="true">
+        <div className="flex items-end gap-[1px]">
+          {[4, 6, 8, 10].map((height) => (
+            <span key={height} className="block w-[2px] rounded-full" style={{ height, background: color }} />
+          ))}
+        </div>
+        <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+          <path d="M1 2.6C2.5 1.5 4.2 1 6 1s3.5.5 5 1.6" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M3.2 5C4 4.4 4.9 4.1 6 4.1S8 4.4 8.8 5" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+        <span className="h-[7px] w-[15px] rounded-[3px]" style={{ background: color }} />
+      </div>
+    </div>
+  );
+}
+
+function ConsumerBottomNav({
+  active,
+  labels,
+  onNavigate,
+}: {
+  active: "home" | "promos";
+  labels: ReturnType<typeof useTranslation>["dict"]["benefits"]["consumerSimulator"];
+  onNavigate: (screen: ConsumerSimulatorScreen) => void;
+}) {
+  const items = [
+    { key: "home" as const, label: labels.navHome, icon: HomeIcon, onClick: () => onNavigate("home") },
+    { key: "favorites" as const, label: labels.navFavorites, icon: Heart, onClick: () => onNavigate("home") },
+    { key: "promos" as const, label: labels.navPromos, icon: Grid3X3, onClick: () => onNavigate("promos") },
+    { key: "community" as const, label: labels.navCommunity, icon: Users, onClick: () => onNavigate("home") },
+  ];
+
+  return (
+    <div className="border-t border-[#eeeafb] bg-[#f4f1ff] px-[10px] pb-[8px] pt-[6px]">
+      <div className="grid grid-cols-4 gap-1">
+        {items.map((item) => {
+          const Icon = item.icon;
+          const selected = item.key === active;
+
+          return (
+            <button
+              key={item.key}
+              type="button"
+              onClick={item.onClick}
+              className={cn(
+                "flex min-w-0 flex-col items-center gap-[3px] rounded-xl py-[3px] text-[7px] transition-colors",
+                selected ? "text-[#8271ef]" : "text-[#7d7d82]"
+              )}
+              aria-current={selected ? "page" : undefined}
+            >
+              <span className={cn("flex h-[19px] w-[33px] items-center justify-center rounded-full", selected && "bg-[#e6c9ff]")}>
+                <Icon className="h-[12px] w-[12px]" fill={selected && item.key !== "promos" ? "currentColor" : "none"} strokeWidth={2.4} />
+              </span>
+              <span className="truncate">{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="mx-auto mt-[5px] h-[2px] w-[56px] rounded-full bg-[#1f1f24]/70" />
+    </div>
+  );
+}
+
+function PromoArtwork({
+  promo,
+  className,
+  compact = false,
+}: {
+  promo: ConsumerPromotion;
+  className?: string;
+  compact?: boolean;
+}) {
+  const visual = getPromoVisual(promo.imageKey);
+
+  return (
+    <div
+      className={cn("relative overflow-hidden bg-[#1f1f24]", className)}
+      style={{ background: visual.background }}
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.22),transparent_28%),linear-gradient(to_bottom,rgba(0,0,0,0),rgba(0,0,0,0.28))]" />
+      <span
+        className={cn(
+          "absolute select-none drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]",
+          compact ? "bottom-2 right-2 text-[30px]" : "bottom-4 right-5 text-[62px]"
+        )}
+        aria-hidden="true"
+      >
+        {visual.emoji}
+      </span>
+      <div className={cn("absolute rounded-full bg-white/12 blur-md", compact ? "left-5 top-4 h-8 w-16" : "left-8 top-8 h-14 w-32")} />
+    </div>
+  );
+}
+
+function CouponQrMark() {
+  const cells = [
+    0, 1, 2, 4, 6, 8, 10, 12, 13, 15, 17, 19, 20, 22, 24, 26, 29, 31, 32, 35,
+  ];
+
+  return (
+    <div className="grid h-[54px] w-[54px] grid-cols-6 gap-[3px] rounded-md bg-white p-[7px]">
+      {Array.from({ length: 36 }).map((_, index) => (
+        <span
+          key={index}
+          className={cn("rounded-[1px]", cells.includes(index) ? "bg-[#cfcfd2]" : "bg-transparent")}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ConsumerHomeScreen({
+  labels,
+  heroPromotion,
+  categoryButtons,
+  activeCount,
+  sourceLabel,
+  isLoading,
+  onOpenDetail,
+  onNavigate,
+}: {
+  labels: ReturnType<typeof useTranslation>["dict"]["benefits"]["consumerSimulator"];
+  heroPromotion: ConsumerPromotion;
+  categoryButtons: Array<{ key: ConsumerPromotion["categoryKey"]; label: string; promo: ConsumerPromotion }>;
+  activeCount: number;
+  sourceLabel: string;
+  isLoading: boolean;
+  onOpenDetail: (promo: ConsumerPromotion) => void;
+  onNavigate: (screen: ConsumerSimulatorScreen) => void;
+}) {
+  return (
+    <div className="flex h-full flex-col overflow-hidden bg-white">
+      <div className="bg-[#8271ef] text-white">
+        <ConsumerStatusBar />
+        <div className="flex h-[48px] items-center gap-[8px] px-[13px] pb-[8px]">
+          <div className="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-full bg-white">
+            <Image src="/klippr/klippr.png" alt="Klippr" width={22} height={22} className="rounded-full" sizes="22px" />
+          </div>
+          <p className="min-w-0 flex-1 truncate text-[17px] font-bold leading-none">{labels.greeting}</p>
+          <Bell className="h-[14px] w-[14px]" fill="currentColor" />
+          <Settings className="h-[16px] w-[16px]" fill="currentColor" />
+        </div>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto px-[14px] pb-[12px] pt-[10px]">
+        <div className="rounded-[18px] bg-[#f8eef9] px-[14px] py-[15px] text-center">
+          <p className="text-[14px] font-bold text-[#8271ef]">{labels.couponsTitle}</p>
+          <div className="mt-[9px] flex items-center justify-center gap-[13px] text-[#c9bae8]">
+            <ChevronLeft className="h-[17px] w-[17px]" />
+            <div className="rounded-[12px] bg-white p-[12px]">
+              <CouponQrMark />
+            </div>
+            <ChevronRight className="h-[17px] w-[17px]" />
+          </div>
+          <p className="mt-[9px] text-[15px] font-bold text-[#8271ef]">{labels.couponsCount}</p>
+          <p className="mt-[2px] text-[9px] font-semibold text-[#8271ef]">{labels.favoritesHint}</p>
+        </div>
+
+        <div className="mt-[15px] grid grid-cols-[1fr_auto_1fr] items-center gap-[10px] px-[10px]">
+          <div>
+            <p className="text-[9px] font-bold leading-tight text-[#8271ef]">{labels.activePromotions}</p>
+            <p className="mt-[4px] text-[20px] font-semibold leading-none text-[#202024]">{activeCount}</p>
+          </div>
+          <span className="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-[#bdf0cd] text-[#338b57]">
+            <Store className="h-[15px] w-[15px]" />
+          </span>
+          <div>
+            <p className="text-[9px] font-bold leading-tight text-[#8271ef]">{labels.usedCoupons}</p>
+            <p className="mt-[4px] text-[20px] font-semibold leading-none text-[#202024]">0</p>
+          </div>
+        </div>
+
+        <p className="mt-[18px] text-[15px] font-bold leading-tight text-[#8271ef]">{labels.popularStores}</p>
+        <div className="mt-[13px] grid grid-cols-3 gap-[8px]">
+          {categoryButtons.map((category) => {
+            const visual = getPromoVisual(category.promo.imageKey);
+
+            return (
+              <button
+                key={category.key}
+                type="button"
+                onClick={() => {
+                  onNavigate("promos");
+                }}
+                className="min-w-0 text-center"
+              >
+                <span className="mx-auto flex h-[36px] w-[36px] items-center justify-center rounded-full text-[18px]" style={{ background: `${visual.accent}33` }}>
+                  {visual.emoji}
+                </span>
+                <span className="mt-[7px] block truncate text-[9px] font-bold text-[#8271ef]">{category.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-[18px] flex items-center justify-between">
+          <p className="text-[15px] font-bold text-[#202024]">{labels.food}</p>
+          <button type="button" onClick={() => onNavigate("promos")} className="text-[#202024]">
+            <ChevronRight className="h-[16px] w-[16px]" />
+          </button>
+        </div>
+        <button
+          type="button"
+          onClick={() => onOpenDetail(heroPromotion)}
+          className="relative mt-[9px] block w-full overflow-hidden rounded-[10px] text-left shadow-[0_8px_18px_rgba(0,0,0,0.14)]"
+        >
+          <PromoArtwork promo={heroPromotion} className="h-[86px]" compact />
+          <div className="absolute left-[8px] top-[9px] flex h-[22px] w-[22px] items-center justify-center rounded-full bg-black/35 text-white">
+            <Share2 className="h-[11px] w-[11px]" />
+          </div>
+          <div className="absolute right-[8px] top-[9px] flex h-[22px] w-[22px] items-center justify-center rounded-full bg-black/35 text-white">
+            <Heart className="h-[11px] w-[11px]" />
+          </div>
+        </button>
+        <p className="mt-[7px] text-center text-[7px] font-semibold text-[#8271ef]">
+          {isLoading ? labels.loading : sourceLabel}
+        </p>
+      </div>
+
+      <ConsumerBottomNav active="home" labels={labels} onNavigate={onNavigate} />
+    </div>
+  );
+}
+
+function ConsumerPromosScreen({
+  labels,
+  groupedPromotions,
+  isLoading,
+  onBack,
+  onOpenDetail,
+  onNavigate,
+}: {
+  labels: ReturnType<typeof useTranslation>["dict"]["benefits"]["consumerSimulator"];
+  groupedPromotions: Record<ConsumerPromotion["categoryKey"], ConsumerPromotion[]>;
+  isLoading: boolean;
+  onBack: () => void;
+  onOpenDetail: (promo: ConsumerPromotion) => void;
+  onNavigate: (screen: ConsumerSimulatorScreen) => void;
+}) {
+  const groups = (["food", "sports", "health", "entertainment"] as const)
+    .map((categoryKey) => ({ categoryKey, promos: groupedPromotions[categoryKey] }))
+    .filter((group) => group.promos.length > 0);
+
+  return (
+    <div className="flex h-full flex-col overflow-hidden bg-white">
+      <div className="bg-[#8271ef] text-white">
+        <ConsumerStatusBar />
+        <div className="grid h-[45px] grid-cols-[28px_1fr_28px] items-center px-[10px] pb-[8px]">
+          <button type="button" onClick={onBack} className="flex h-[24px] w-[24px] items-center justify-center">
+            <ChevronLeft className="h-[15px] w-[15px]" />
+          </button>
+          <p className="text-center text-[13px] font-bold">{labels.promosTitle}</p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-[6px] px-[9px] py-[8px]">
+        <div className="flex h-[30px] min-w-0 flex-1 overflow-hidden rounded-[7px] border border-[#ead8ff]">
+          <span className="flex flex-1 items-center px-[8px] text-[8px] text-[#a7a1ad]">{labels.searchPlaceholder}</span>
+          <span className="flex w-[31px] items-center justify-center bg-[#8271ef] text-white">
+            <Search className="h-[12px] w-[12px]" />
+          </span>
+        </div>
+        <button type="button" className="flex h-[30px] w-[30px] items-center justify-center rounded-[8px] border border-[#ead8ff] text-[#7d7388]">
+          <SlidersHorizontal className="h-[13px] w-[13px]" />
+        </button>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto px-[9px] pb-[8px]">
+        {isLoading ? (
+          <p className="py-8 text-center text-[9px] font-semibold text-[#8271ef]">{labels.loading}</p>
+        ) : groups.length === 0 ? (
+          <p className="py-8 text-center text-[9px] font-semibold text-[#8271ef]">{labels.empty}</p>
+        ) : (
+          <div className="space-y-[12px]">
+            {groups.map(({ categoryKey, promos }) => (
+              <section key={categoryKey}>
+                <div className="mb-[6px] flex items-center justify-between">
+                  <div className="flex min-w-0 items-center gap-[5px]">
+                    <span className="h-[14px] w-[2px] rounded-full bg-[#8271ef]" />
+                    <h3 className="truncate text-[11px] font-bold text-[#202024]">{getCategoryLabel(categoryKey, labels)}</h3>
+                  </div>
+                  <button type="button" className="text-[8px] font-medium text-[#8271ef]">{labels.more}</button>
+                </div>
+                <div className="-mx-[1px] flex gap-[7px] overflow-x-auto px-[1px] pb-[3px]">
+                  {promos.map((promo) => (
+                    <PromoCard key={promo.id} promo={promo} labels={labels} onOpenDetail={onOpenDetail} />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <ConsumerBottomNav active="promos" labels={labels} onNavigate={onNavigate} />
+    </div>
+  );
+}
+
+function PromoCard({
+  promo,
+  labels,
+  onOpenDetail,
+}: {
+  promo: ConsumerPromotion;
+  labels: ReturnType<typeof useTranslation>["dict"]["benefits"]["consumerSimulator"];
+  onOpenDetail: (promo: ConsumerPromotion) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onOpenDetail(promo)}
+      className="w-[76px] shrink-0 overflow-hidden rounded-[8px] bg-white text-left shadow-[0_4px_10px_rgba(20,20,28,0.16)] ring-1 ring-black/5"
+    >
+      <PromoArtwork promo={promo} className="h-[58px]" compact />
+      <div className="p-[5px]">
+        <p className="truncate text-[6px] font-medium text-[#8271ef]">{promo.businessName}</p>
+        <p className="mt-[3px] line-clamp-2 min-h-[22px] text-[8px] font-bold leading-[1.35] text-[#202024]">{promo.title}</p>
+        <p className="mt-[3px] line-clamp-2 min-h-[18px] text-[6px] leading-[1.35] text-[#8b8b91]">{promo.description}</p>
+        <p className="mt-[5px] flex items-center gap-[2px] text-[6px] text-[#8b8b91]">
+          <Info className="h-[6px] w-[6px]" />
+          {labels.details}
+        </p>
+      </div>
+    </button>
+  );
+}
+
+function ConsumerDetailScreen({
+  labels,
+  locale,
+  promotion,
+  onBack,
+}: {
+  labels: ReturnType<typeof useTranslation>["dict"]["benefits"]["consumerSimulator"];
+  locale: string;
+  promotion: ConsumerPromotion;
+  onBack: () => void;
+}) {
+  return (
+    <div className="flex h-full flex-col overflow-hidden bg-white">
+      <div className="relative h-[216px] shrink-0 overflow-hidden">
+        <PromoArtwork promo={promotion} className="h-full" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/10" />
+        <div className="absolute left-0 right-0 top-0">
+          <ConsumerStatusBar dark />
+        </div>
+        <div className="absolute left-[10px] right-[10px] top-[28px] flex items-center justify-between">
+          <button type="button" onClick={onBack} className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white text-[#202024] shadow-sm">
+            <ChevronLeft className="h-[16px] w-[16px]" />
+          </button>
+          <div className="flex gap-[8px]">
+            <button type="button" className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white text-[#202024] shadow-sm">
+              <Share2 className="h-[14px] w-[14px]" />
+            </button>
+            <button type="button" className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white text-[#8271ef] shadow-sm">
+              <Heart className="h-[14px] w-[14px]" fill="currentColor" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto px-[14px] py-[15px] text-center">
+        <p className="text-[15px] font-bold leading-tight text-[#8271ef]">{promotion.businessName || labels.businessUnavailable}</p>
+        <h3 className="mx-auto mt-[6px] max-w-[190px] text-[15px] font-extrabold leading-[1.18] text-[#202024]">{promotion.title}</h3>
+        <p className="mx-auto mt-[10px] max-w-[214px] text-[8px] leading-[1.5] text-[#8b8b91]">
+          {getCategoryLabel(promotion.categoryKey, labels)} · {promotion.description}
+        </p>
+
+        <div className="my-[12px] h-px bg-[#e5defc]" />
+
+        <div className="flex gap-[8px] text-left">
+          <span className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-full bg-[#8271ef] text-[12px] font-bold text-white">N</span>
+          <div className="min-w-0">
+            <p className="truncate text-[9px] font-bold text-[#202024]">
+              Promocion de {promotion.businessName || labels.businessUnavailable}
+            </p>
+            <p className="mt-[2px] text-[8px] text-[#8b8b91]">{getCategoryLabel(promotion.categoryKey, labels)}</p>
+          </div>
+        </div>
+
+        <dl className="mt-[12px] space-y-[8px] text-left text-[8px] leading-none text-[#202024]">
+          <div className="flex gap-[4px]">
+            <dt className="font-bold">{labels.businessLabel}:</dt>
+            <dd className="min-w-0 flex-1 truncate">{promotion.businessName}</dd>
+          </div>
+          <div className="flex gap-[4px]">
+            <dt className="font-bold">{labels.quantityLabel}:</dt>
+            <dd>{labels.availableCount.replace("{count}", String(promotion.redemptionCap))}</dd>
+          </div>
+          <div className="flex gap-[4px]">
+            <dt className="font-bold">{labels.expirationLabel}:</dt>
+            <dd className="min-w-0 flex-1 truncate">{formatPromoDate(promotion.endDate, locale)}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div className="border-t border-[#eeeafb] bg-[#f4f1ff] px-[12px] pb-[11px] pt-[9px]">
+        <div className="flex items-center gap-[10px]">
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] font-extrabold leading-none text-[#202024]">{promotion.discountLabel}</p>
+            <p className="mt-[3px] text-[7px] text-[#8b8b91]">{labels.discountLabel}</p>
+          </div>
+          <button
+            type="button"
+            disabled
+            className="h-[32px] w-[120px] rounded-full bg-[#c8bce8] text-[9px] font-bold text-white"
+          >
+            {labels.generateQr}
+          </button>
+        </div>
+        <div className="mx-auto mt-[9px] h-[2px] w-[56px] rounded-full bg-[#1f1f24]/70" />
+      </div>
     </div>
   );
 }
@@ -310,19 +841,24 @@ function PhoneMockup({ activeTab }: { activeTab: Tab }) {
 
   useEffect(() => {
     if (activeTab === visibleTab) return;
-    setOpacity(0);
-    const t = setTimeout(() => {
+
+    const fadeTimer = window.setTimeout(() => setOpacity(0), 0);
+    const swapTimer = window.setTimeout(() => {
       setVisibleTab(activeTab);
       setOpacity(1);
     }, 150);
-    return () => clearTimeout(t);
-  }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /* iPhone 15 Pro proportions: 220×476 rendered */
-  const W = 220;
-  const H = 476;
-  const FRAME = 8;           // sleeker frame thickness
-  const R = 42;              // outer corner radius
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(swapTimer);
+    };
+  }, [activeTab, visibleTab]);
+
+  /* Tall phone proportions close to the app captures */
+  const W = 260;
+  const H = 562;
+  const FRAME = 6;           // sleeker frame thickness
+  const R = 34;              // outer corner radius
   const INNER_R = R - FRAME; // inner screen radius
 
   return (
@@ -422,130 +958,148 @@ function PhoneMockup({ activeTab }: { activeTab: Tab }) {
             overflow: "clip",
           }}
         >
-          {/* ── Status bar ── */}
-          <div
-            style={{
-              height: 44,
-              paddingTop: 16,
-              paddingLeft: 20,
-              paddingRight: 18,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              background: "linear-gradient(135deg, #7161ef 0%, #9b8ff7 100%)",
-            }}
-          >
-            {/* Time */}
-            <span style={{ fontSize: 9.5, fontWeight: 600, color: "white", letterSpacing: 0.2 }}>
-              9:41
-            </span>
-            {/* Status icons */}
-            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              {/* Signal bars */}
-              <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                <rect x="0" y="6" width="2.5" height="4" rx="1" fill="white" />
-                <rect x="3.8" y="4.5" width="2.5" height="5.5" rx="1" fill="white" />
-                <rect x="7.6" y="2.5" width="2.5" height="7.5" rx="1" fill="white" />
-                <rect x="11.4" y="0" width="2.5" height="10" rx="1" fill="white" />
-              </svg>
-              {/* WiFi */}
-              <svg width="13" height="9" viewBox="0 0 13 9" fill="none">
-                <path d="M6.5 8a1 1 0 100-2 1 1 0 000 2z" fill="white" />
-                <path d="M3 5.5C4.5 4.3 5.5 4 6.5 4S8.5 4.3 10 5.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                <path d="M0.5 3C2.5 1.2 4.5 0.5 6.5 0.5S10.5 1.2 12.5 3" stroke="white" strokeWidth="1.2" strokeLinecap="round" fill="none" strokeOpacity="0.7" />
-              </svg>
-              {/* Battery */}
-              <svg width="20" height="10" viewBox="0 0 20 10" fill="none">
-                <rect x="0.5" y="0.5" width="16" height="9" rx="2.5" stroke="white" strokeOpacity="0.5" />
-                <rect x="2" y="2" width="11" height="6" rx="1.5" fill="white" />
-                <path d="M17.5 3.5v3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.5" />
-              </svg>
-            </div>
-          </div>
-
-          {/* ── App header bar ── */}
-          <div
-            style={{
-              padding: "8px 16px 8px",
-              background: "linear-gradient(135deg, #7161ef 0%, #9b8ff7 100%)",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <Image
-              src="/klippr/klippr.png"
-              alt="Klippr"
-              width={24}
-              height={24}
-              className="rounded-md object-cover shrink-0"
-              sizes="24px"
-            />
-            <span style={{ fontSize: 11, fontWeight: 700, color: "white", letterSpacing: 0.5 }}>KLIPPR</span>
-            <div style={{ marginLeft: "auto", width: 22, height: 22, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "white" }} />
-            </div>
-          </div>
-
-          {/* ── Section label ── */}
-          <div style={{ padding: "10px 14px 4px" }}>
-            <span
+          {visibleTab === "b2c" ? (
+            <div
+              className="h-full"
               style={{
-                fontSize: 8,
-                fontWeight: 700,
-                color: "#7161ef",
-                textTransform: "uppercase",
-                letterSpacing: 1.5,
-                opacity: 0.9,
+                opacity,
+                transition: "opacity 150ms ease",
               }}
             >
-              {visibleTab === "b2c" ? dict.benefits.screenLabelConsumer : dict.benefits.screenLabelBusiness}
-            </span>
-          </div>
+              <B2CScreen />
+            </div>
+          ) : (
+            <>
+              {/* ── Status bar ── */}
+              <div
+                style={{
+                  height: 44,
+                  paddingTop: 16,
+                  paddingLeft: 20,
+                  paddingRight: 18,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  background: "linear-gradient(135deg, #7161ef 0%, #9b8ff7 100%)",
+                }}
+              >
+                {/* Time */}
+                <span style={{ fontSize: 9.5, fontWeight: 600, color: "white", letterSpacing: 0.2 }}>
+                  9:41
+                </span>
+                {/* Status icons */}
+                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  {/* Signal bars */}
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                    <rect x="0" y="6" width="2.5" height="4" rx="1" fill="white" />
+                    <rect x="3.8" y="4.5" width="2.5" height="5.5" rx="1" fill="white" />
+                    <rect x="7.6" y="2.5" width="2.5" height="7.5" rx="1" fill="white" />
+                    <rect x="11.4" y="0" width="2.5" height="10" rx="1" fill="white" />
+                  </svg>
+                  {/* WiFi */}
+                  <svg width="13" height="9" viewBox="0 0 13 9" fill="none">
+                    <path d="M6.5 8a1 1 0 100-2 1 1 0 000 2z" fill="white" />
+                    <path d="M3 5.5C4.5 4.3 5.5 4 6.5 4S8.5 4.3 10 5.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                    <path d="M0.5 3C2.5 1.2 4.5 0.5 6.5 0.5S10.5 1.2 12.5 3" stroke="white" strokeWidth="1.2" strokeLinecap="round" fill="none" strokeOpacity="0.7" />
+                  </svg>
+                  {/* Battery */}
+                  <svg width="20" height="10" viewBox="0 0 20 10" fill="none">
+                    <rect x="0.5" y="0.5" width="16" height="9" rx="2.5" stroke="white" strokeOpacity="0.5" />
+                    <rect x="2" y="2" width="11" height="6" rx="1.5" fill="white" />
+                    <path d="M17.5 3.5v3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.5" />
+                  </svg>
+                </div>
+              </div>
 
-          {/* ── Cross-dissolve screen content ── */}
-          <div
-            style={{
-              padding: "0 12px 12px",
-              opacity,
-              transition: "opacity 150ms ease",
-            }}
-          >
-            {visibleTab === "b2c" ? <B2CScreen /> : <B2BScreen />}
-          </div>
+              {/* ── App header bar ── */}
+              <div
+                style={{
+                  padding: "8px 16px 8px",
+                  background: "linear-gradient(135deg, #7161ef 0%, #9b8ff7 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <Image
+                  src="/klippr/klippr.png"
+                  alt="Klippr"
+                  width={24}
+                  height={24}
+                  className="rounded-md object-cover shrink-0"
+                  sizes="24px"
+                />
+                <span style={{ fontSize: 11, fontWeight: 700, color: "white", letterSpacing: 0.5 }}>KLIPPR</span>
+                <div style={{ marginLeft: "auto", width: 22, height: 22, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "white" }} />
+                </div>
+              </div>
+
+              {/* ── Section label ── */}
+              <div style={{ padding: "10px 14px 4px" }}>
+                <span
+                  style={{
+                    fontSize: 8,
+                    fontWeight: 700,
+                    color: "#7161ef",
+                    textTransform: "uppercase",
+                    letterSpacing: 1.5,
+                    opacity: 0.9,
+                  }}
+                >
+                  {dict.benefits.screenLabelBusiness}
+                </span>
+              </div>
+
+              {/* ── Cross-dissolve screen content ── */}
+              <div
+                style={{
+                  padding: "0 12px 12px",
+                  opacity,
+                  transition: "opacity 150ms ease",
+                }}
+              >
+                <B2BScreen />
+              </div>
+            </>
+          )}
         </div>
 
-        {/* ── Dynamic Island ── */}
-        <div
-          style={{
-            position: "absolute",
-            top: 11,
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: 72,
-            height: 22,
-            borderRadius: 20,
-            background: "#000",
-            zIndex: 10,
-            boxShadow: "inset 0 0 1px 1px rgba(255,255,255,0.05)",
-          }}
-        >
-          {/* Camera lens reflection */}
-          <div style={{ position: "absolute", right: 6, top: 4, width: 14, height: 14, borderRadius: "50%", background: "#111", boxShadow: "inset -1px -1px 2px rgba(255,255,255,0.1)" }} />
-        </div>
+        {visibleTab === "b2b" && (
+          <>
+            {/* ── Dynamic Island ── */}
+            <div
+              style={{
+                position: "absolute",
+                top: 11,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: 72,
+                height: 22,
+                borderRadius: 20,
+                background: "#000",
+                zIndex: 10,
+                boxShadow: "inset 0 0 1px 1px rgba(255,255,255,0.05)",
+              }}
+            >
+              {/* Camera lens reflection */}
+              <div style={{ position: "absolute", right: 6, top: 4, width: 14, height: 14, borderRadius: "50%", background: "#111", boxShadow: "inset -1px -1px 2px rgba(255,255,255,0.1)" }} />
+            </div>
 
-        {/* ── Screen glare overlay ── */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            borderRadius: INNER_R - 1,
-            background:
-              "linear-gradient(115deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.02) 40%, transparent 45%)",
-            pointerEvents: "none",
-            zIndex: 20,
-          }}
-        />
+            {/* ── Screen glare overlay ── */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: INNER_R - 1,
+                background:
+                  "linear-gradient(115deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.02) 40%, transparent 45%)",
+                pointerEvents: "none",
+                zIndex: 20,
+              }}
+            />
+          </>
+        )}
       </div>
 
       {/* ── Ambient glow ── */}
@@ -642,7 +1196,7 @@ function TabPills({
   // Also measure on mount
   useEffect(() => {
     updateIndicator("b2c");
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex justify-center">

@@ -30,7 +30,7 @@ export function Navbar() {
         className={cn(
           "relative flex items-center justify-between transition-all duration-500 mx-auto",
           isScrolled
-            ? "w-[95%] md:w-[65%] mt-4 px-4 md:px-6 py-3 bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04),0_0_0_1px_#e5e7eb]"
+            ? "w-[95%] md:w-[82%] lg:w-[76%] xl:w-[70%] mt-4 px-4 md:px-6 py-3 bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04),0_0_0_1px_#e5e7eb]"
             : "w-full px-4 md:px-10 py-4 bg-white/80 backdrop-blur-sm"
         )}
       >
@@ -44,7 +44,7 @@ export function Navbar() {
 
         {/* Center */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block">
-          <nav className="flex items-center gap-4 lg:gap-5">
+          <nav className="flex items-center gap-3 xl:gap-4">
             <a 
               href="#hero" 
               onClick={(e) => scrollToSection(e, "hero")}
@@ -79,6 +79,13 @@ export function Navbar() {
               className="text-[13px] lg:text-sm font-medium text-[#6b7280] hover:text-[#7161ef] transition-colors duration-150"
             >
               {dict.navbar.comparison}
+            </a>
+            <a
+              href="#videos"
+              onClick={(e) => scrollToSection(e, "videos")}
+              className="text-[13px] lg:text-sm font-medium text-[#6b7280] hover:text-[#7161ef] transition-colors duration-150"
+            >
+              {dict.navbar.videos}
             </a>
           </nav>
         </div>

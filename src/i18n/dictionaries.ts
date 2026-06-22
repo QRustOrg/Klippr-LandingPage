@@ -69,6 +69,7 @@ export interface Dictionary {
     benefits: string;
     testimonials: string;
     comparison: string;
+    videos: string;
     howItWorks: string;
   };
   hero: {
@@ -137,6 +138,38 @@ export interface Dictionary {
       redemptionsPerDay: string;
       promoLabel: string;
       promoStatus: string;
+    };
+    consumerSimulator: {
+      greeting: string;
+      couponsTitle: string;
+      couponsCount: string;
+      favoritesHint: string;
+      activePromotions: string;
+      usedCoupons: string;
+      popularStores: string;
+      food: string;
+      sports: string;
+      health: string;
+      entertainment: string;
+      promosTitle: string;
+      searchPlaceholder: string;
+      more: string;
+      businessUnavailable: string;
+      details: string;
+      availableCount: string;
+      expirationLabel: string;
+      businessLabel: string;
+      quantityLabel: string;
+      generateQr: string;
+      discountLabel: string;
+      loading: string;
+      empty: string;
+      sourceLive: string;
+      sourceFallback: string;
+      navHome: string;
+      navFavorites: string;
+      navPromos: string;
+      navCommunity: string;
     };
   };
   socialProof: {

@@ -5,6 +5,7 @@
     "benefits": "Benefits",
     "testimonials": "Testimonials",
     "comparison": "Comparison",
+    "videos": "Videos",
     "howItWorks": "How it works?"
   },
   "hero": {
@@ -251,6 +252,38 @@
       "redemptionsPerDay": "Redeemed/day",
       "promoLabel": "Promo 30% OFF",
       "promoStatus": "Active · 87 left"
+    },
+    "consumerSimulator": {
+      "greeting": "Hi, paulo!",
+      "couponsTitle": "Your coupons!",
+      "couponsCount": "You have 1 coupon",
+      "favoritesHint": "Tap 'Favorites' to see them",
+      "activePromotions": "Active Promotions",
+      "usedCoupons": "Used Coupons",
+      "popularStores": "Popular Stores Nearby",
+      "food": "Food",
+      "sports": "Sports",
+      "health": "Health",
+      "entertainment": "Entertainment",
+      "promosTitle": "Promos",
+      "searchPlaceholder": "Search",
+      "more": "See more",
+      "businessUnavailable": "Business unavailable",
+      "details": "More info.",
+      "availableCount": "{count} available",
+      "expirationLabel": "Valid until",
+      "businessLabel": "Business",
+      "quantityLabel": "Quantity",
+      "generateQr": "Generate QR",
+      "discountLabel": "Discount",
+      "loading": "Loading promotions...",
+      "empty": "No active promotions right now.",
+      "sourceLive": "Live data",
+      "sourceFallback": "Local demo",
+      "navHome": "Home",
+      "navFavorites": "Favorites",
+      "navPromos": "Promos",
+      "navCommunity": "Community"
     }
   },
   "socialProof": {
